@@ -188,7 +188,7 @@ void ImageDownloadHandle::update()
 	std::ofstream stream(mSavePath, std::ios_base::out | std::ios_base::binary);
 	if(stream.bad())
 	{
-		setError("Failed to open image path to write. Permission error? Disk full?");
+		setError("NÃO FOI POSSÍVEL ABRIR O CAMINHO DA IMAGEM PARA GRAVAÇÃO. ERRO DE PERMISSÃO? DISCO CHEIO?");
 		return;
 	}
 
@@ -197,14 +197,14 @@ void ImageDownloadHandle::update()
 	stream.close();
 	if(stream.bad())
 	{
-		setError("Failed to save image. Disk full?");
+		setError("FALHA AO SALVAR A IMAGEM. DISCO CHEIO?");
 		return;
 	}
 
 	// resize it
 	if(!resizeImage(mSavePath, mMaxWidth, mMaxHeight))
 	{
-		setError("Error saving resized image. Out of memory? Disk full?");
+		setError("ERRO AO SALVAR A IMAGEM REDIMENSIONADA. SEM MEMÓRIA? DISCO CHEIO?");
 		return;
 	}
 

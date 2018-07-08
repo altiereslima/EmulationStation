@@ -97,7 +97,6 @@ void HelpComponent::updateGrid()
 
 	mGrid->setPosition(Vector3f(mStyle.position.x(), mStyle.position.y(), 0.0f));
 	//mGrid->setPosition(OFFSET_X, Renderer::getScreenHeight() - mGrid->getSize().y() - OFFSET_Y);
-	mGrid->setOrigin(mStyle.origin);
 }
 
 std::shared_ptr<TextureResource> HelpComponent::getIconTexture(const char* name)

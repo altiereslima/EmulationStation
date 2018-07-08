@@ -14,7 +14,7 @@
 #include <pugixml/src/pugixml.hpp>
 #include <fstream>
 
-std::string myCollectionsName = "collections";
+std::string myCollectionsName = "COLEÇÕES";
 
 #define LAST_PLAYED_MAX	50
 
@@ -26,10 +26,10 @@ CollectionSystemManager::CollectionSystemManager(Window* window) : mWindow(windo
 {
 	CollectionSystemDecl systemDecls[] = {
 		//type                  name            long name            //default sort              // theme folder            // isCustom
-		{ AUTO_ALL_GAMES,       "all",          "all games",         "filename, ascending",      "auto-allgames",           false },
-		{ AUTO_LAST_PLAYED,     "recent",       "last played",       "last played, descending",  "auto-lastplayed",         false },
-		{ AUTO_FAVORITES,       "favorites",    "favorites",         "filename, ascending",      "auto-favorites",          false },
-		{ CUSTOM_COLLECTION,    myCollectionsName,  "collections",    "filename, ascending",      "custom-collections",      true }
+		{ AUTO_ALL_GAMES,       "all",          "TODOS OS JOGOS",         "NOME DO ARQUIVO, ↓",      "auto-allgames",           false },
+		{ AUTO_LAST_PLAYED,     "recent",       "ÚLT. PARTIDA",       "ÚLT. PARTIDA JOGADA, ↑",  "auto-lastplayed",         false },
+		{ AUTO_FAVORITES,       "favorites",    "FAVORITOS",         "NOME DO ARQUIVO, ↓",      "auto-favorites",          false },
+		{ CUSTOM_COLLECTION,    myCollectionsName,  "COLEÇÕES",    "NOME DO ARQUIVO, ↓",      "custom-collections",      true }
 	};
 
 	// create a map
@@ -55,7 +55,7 @@ CollectionSystemManager::CollectionSystemManager(Window* window) : mWindow(windo
 		Utils::FileSystem::createDirectory(path);
 
 	mIsEditingCustom = false;
-	mEditingCollection = "Favorites";
+	mEditingCollection = "Favoritos";
 	mEditingCollectionSystemData = NULL;
 	mCustomCollectionsBundle = NULL;
 }
@@ -384,12 +384,12 @@ std::string CollectionSystemManager::getValidNewCollectionName(std::string inNam
 
 	if(name == "")
 	{
-		name = "New Collection";
+		name = "NOVA COLEÇÃO";
 	}
 
 	if(name != inName)
 	{
-		LOG(LogInfo) << "Had to change name, from: " << inName << " to: " << name;
+		LOG(LogInfo) << "TEVE QUE MUDAR DE NOME, DE: " << inName << " PARA: " << name;
 	}
 
 	// get used systems in es_systems.cfg
@@ -438,16 +438,16 @@ void CollectionSystemManager::setEditMode(std::string collectionName)
 	// if it's bundled, this needs to be the bundle system
 	mEditingCollectionSystemData = sysData;
 
-	GuiInfoPopup* s = new GuiInfoPopup(mWindow, "Editing the '" + Utils::String::toUpper(collectionName) + "' Collection. Add/remove games with Y.", 10000);
+	GuiInfoPopup* s = new GuiInfoPopup(mWindow, "EDITANDO '" + Utils::String::toUpper(collectionName) + "' COLEÇÃO. ADIC/REMOVER JOGOS COM Y.", 10000);
 	mWindow->setInfoPopup(s);
 }
 
 void CollectionSystemManager::exitEditMode()
 {
-	GuiInfoPopup* s = new GuiInfoPopup(mWindow, "Finished editing the '" + mEditingCollection + "' Collection.", 4000);
+	GuiInfoPopup* s = new GuiInfoPopup(mWindow, "FINALIZADA A EDIÇÃO DE '" + mEditingCollection + "' COLEÇÃO.", 4000);
 	mWindow->setInfoPopup(s);
 	mIsEditingCustom = false;
-	mEditingCollection = "Favorites";
+	mEditingCollection = "FAVORITOS";
 }
 
 // adds or removes a game from a specific collection
@@ -525,11 +525,11 @@ bool CollectionSystemManager::toggleGameInCollection(FileData* file)
 		}
 		if (adding)
 		{
-			s = new GuiInfoPopup(mWindow, "Added '" + Utils::String::removeParenthesis(name) + "' to '" + Utils::String::toUpper(sysName) + "'", 4000);
+			s = new GuiInfoPopup(mWindow, "ADICIONADO '" + Utils::String::removeParenthesis(name) + "' AOS '" + Utils::String::toUpper(sysName) + "'", 4000);
 		}
 		else
 		{
-			s = new GuiInfoPopup(mWindow, "Removed '" + Utils::String::removeParenthesis(name) + "' from '" + Utils::String::toUpper(sysName) + "'", 4000);
+			s = new GuiInfoPopup(mWindow, "REMOVIDO '" + Utils::String::removeParenthesis(name) + "' DOS '" + Utils::String::toUpper(sysName) + "'", 4000);
 		}
 		mWindow->setInfoPopup(s);
 		return true;
@@ -575,12 +575,12 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 {
 	FileData* rootFolder = sys->getRootFolder();
 
-	std::string desc = "This collection is empty.";
+	std::string desc = "ESTA COLEÇÃO ESTÁ VAZIA.";
 	std::string rating = "0";
 	std::string players = "1";
 	std::string releasedate = "N/A";
-	std::string developer = "None";
-	std::string genre = "None";
+	std::string developer = "NENHUMA";
+	std::string genre = "NENHUM";
 	std::string video = "";
 	std::string thumbnail = "";
 	std::string image = "";
@@ -605,8 +605,8 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 			rating = (new_rating > rating ? (new_rating != "" ? new_rating : rating) : rating);
 			players = (new_players > players ? (new_players != "" ? new_players : players) : players);
 			releasedate = (new_releasedate < releasedate ? (new_releasedate != "" ? new_releasedate : releasedate) : releasedate);
-			developer = (developer == "None" ? new_developer : (new_developer != developer ? "Various" : new_developer));
-			genre = (genre == "None" ? new_genre : (new_genre != genre ? "Various" : new_genre));
+			developer = (developer == "NENHUMA" ? new_developer : (new_developer != developer ? "VÁRIAS" : new_developer));
+			genre = (genre == "NENHUM" ? new_genre : (new_genre != genre ? "VÁRIOS" : new_genre));
 
 			switch(games_counter)
 			{
@@ -617,11 +617,11 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 					games_list += "'" + file->getName() + "'";
 					break;
 				case 4:
-					games_list += " among other titles.";
+					games_list += " ENTRE OUTROS TÍTULOS.";
 			}
 		}
 
-		desc = "This collection contains " + std::to_string(games_counter) + " games, including " + games_list;
+		desc = "ESTA COLEÇÃO CONTÉM " + std::to_string(games_counter) + " JOGO(S), INCLUINDO " + games_list;
 
 		FileData* randomGame = sys->getRandomGame();
 
@@ -973,7 +973,8 @@ std::vector<std::string> CollectionSystemManager::getCollectionsFromConfigFolder
 			if (Utils::FileSystem::isRegularFile(*it))
 			{
 				// it's a file
-				std::string filename = Utils::FileSystem::getFileName(*it);
+				std::string file = *it;
+				std::string filename = file.substr(configPath.size());
 
 				// need to confirm filename matches config format
 				if (filename != "custom-.cfg" && Utils::String::startsWith(filename, "custom-") && Utils::String::endsWith(filename, ".cfg"))

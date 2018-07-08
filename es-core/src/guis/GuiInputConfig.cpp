@@ -74,31 +74,31 @@ static const bool inputSkippable[inputCount] =
 };
 static const char* inputDispName[inputCount] =
 {
-	"D-PAD UP",
-	"D-PAD DOWN",
-	"D-PAD LEFT",
-	"D-PAD RIGHT",
+	"D-PAD CIMA",
+	"D-PAD BAIXO",
+	"D-PAD ESQUERDA",
+	"D-PAD DIREITA",
 	"START",
 	"SELECT",
 	"A",
 	"B",
 	"X",
 	"Y",
-	"LEFT SHOULDER",
-	"RIGHT SHOULDER",
-	"LEFT TRIGGER",
-	"RIGHT TRIGGER",
-	"LEFT THUMB",
-	"RIGHT THUMB",
-	"LEFT ANALOG UP",
-	"LEFT ANALOG DOWN",
-	"LEFT ANALOG LEFT",
-	"LEFT ANALOG RIGHT",
-	"RIGHT ANALOG UP",
-	"RIGHT ANALOG DOWN",
-	"RIGHT ANALOG LEFT",
-	"RIGHT ANALOG RIGHT",
-	"HOTKEY ENABLE"
+	"OMBRO ESQUERDO",
+	"OMBRO DIREITO",
+	"GATILHO ESQUERDO",
+	"GATILHO DIREITO",
+	"POLEGAR ESQUERDO",
+	"POLEGAR DIREITO",
+	"ANALÓGICO ESQ. CIMA",
+	"ANALÓGICO ESQ. BAIXO",
+	"ANALÓGICO ESQ. ESQUERDA",
+	"ANALÓGICO ESQ. DIREITA",
+	"ANALÓGICO DIR. CIMA",
+	"ANALÓGICO DIR. BAIXO",
+	"ANALÓGICO DIR. ESQUERDA",
+	"ANALÓGICO DIR. DIREITA",
+	"ATIVAR TECLA CHAVE"
 };
 static const char* inputIcon[inputCount] =
 {
@@ -138,7 +138,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 	mBackground(window, ":/frame.png"), mGrid(window, Vector2i(1, 7)), 
 	mTargetConfig(target), mHoldingInput(false), mBusyAnim(window)
 {
-	LOG(LogInfo) << "Configuring device " << target->getDeviceId() << " (" << target->getDeviceName() << ").";
+	LOG(LogInfo) << "CONFIGURANDO DISPOSITIVO " << target->getDeviceId() << " (" << target->getDeviceName() << ").";
 
 	if(reconfigureAll)
 		target->clear();
@@ -152,20 +152,20 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 	// 0 is a spacer row
 	mGrid.setEntry(std::make_shared<GuiComponent>(mWindow), Vector2i(0, 0), false);
 
-	mTitle = std::make_shared<TextComponent>(mWindow, "CONFIGURING", Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
+	mTitle = std::make_shared<TextComponent>(mWindow, "CONFIGURANDO", Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
 	mGrid.setEntry(mTitle, Vector2i(0, 1), false, true);
 	
 	std::stringstream ss;
 	if(target->getDeviceId() == DEVICE_KEYBOARD)
-		ss << "KEYBOARD";
+		ss << "TECLADO";
 	else if(target->getDeviceId() == DEVICE_CEC)
 		ss << "CEC";
 	else
-		ss << "GAMEPAD " << (target->getDeviceId() + 1);
+		ss << "CONTROLE " << (target->getDeviceId() + 1);
 	mSubtitle1 = std::make_shared<TextComponent>(mWindow, Utils::String::toUpper(ss.str()), Font::get(FONT_SIZE_MEDIUM), 0x555555FF, ALIGN_CENTER);
 	mGrid.setEntry(mSubtitle1, Vector2i(0, 2), false, true);
 
-	mSubtitle2 = std::make_shared<TextComponent>(mWindow, "HOLD ANY BUTTON TO SKIP", Font::get(FONT_SIZE_SMALL), 0x99999900, ALIGN_CENTER);
+	mSubtitle2 = std::make_shared<TextComponent>(mWindow, "SEGURE QUALQUER BOTÃO PARA PULAR", Font::get(FONT_SIZE_SMALL), 0x99999900, ALIGN_CENTER);
 	mGrid.setEntry(mSubtitle2, Vector2i(0, 3), false, true);
 
 	// 4 is a spacer row
@@ -191,7 +191,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 		auto text = std::make_shared<TextComponent>(mWindow, inputDispName[i], Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
 		row.addElement(text, true);
 
-		auto mapping = std::make_shared<TextComponent>(mWindow, "-NOT DEFINED-", Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT), 0x999999FF, ALIGN_RIGHT);
+		auto mapping = std::make_shared<TextComponent>(mWindow, "-NÃO DEFINIDO-", Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT), 0x999999FF, ALIGN_RIGHT);
 		setNotDefined(mapping); // overrides text and color set above
 		row.addElement(mapping, true);
 		mMappings.push_back(mapping);
@@ -272,14 +272,14 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 		Input input;
 		if (!mTargetConfig->getInputByName("HotKeyEnable", &input)) {
 			mWindow->pushGui(new GuiMsgBox(mWindow,
-				"YOU DIDN'T CHOOSE A HOTKEY ENABLE BUTTON. THIS IS REQUIRED FOR EXITING GAMES WITH A CONTROLLER. DO YOU WANT TO USE THE SELECT BUTTON DEFAULT ? PLEASE ANSWER YES TO USE SELECT OR NO TO NOT SET A HOTKEY ENABLE BUTTON.",
-				"YES", [this, okFunction] {
+				"VOCÊ NÃO ESCOLHEU UM BOTÃO DE ATIVAR A TECLA CHAVE. ISSO É NECESSÁRIO PARA SAIR DOS JOGOS COM O CONTROLE. VOCÊ QUER USAR O PADRÃO DO BOTÃO DE SELEÇÃO? POR FAVOR, RESPONDA SIM PARA UTILIZAR OU NÃO PARA DEFINIR UM BOTÃO DE ATIVAR A TECLA CHAVE.",
+				"SIM", [this, okFunction] {
 					Input input;
 					mTargetConfig->getInputByName("Select", &input);
 					mTargetConfig->mapInput("HotKeyEnable", input);
 					okFunction();
 					},
-				"NO", [this, okFunction] {
+				"NÃO", [this, okFunction] {
 					// for a disabled hotkey enable button, set to a key with id 0,
 					// so the input configuration script can be backwards compatible.
 					mTargetConfig->mapInput("HotKeyEnable", Input(DEVICE_KEYBOARD, TYPE_KEY, 0, 1, true));
@@ -335,7 +335,7 @@ void GuiInputConfig::update(int deltaTime)
 				// crossed the second boundary, update text
 				const auto& text = mMappings.at(mHeldInputId);
 				std::stringstream ss;
-				ss << "HOLD FOR " << HOLD_TO_SKIP_MS/1000 - curSec << "S TO SKIP";
+				ss << "SEGURE PARA " << HOLD_TO_SKIP_MS/1000 - curSec << "S PULAR";
 				text->setText(ss.str());
 				text->setColor(0x777777FF);
 			}
@@ -367,13 +367,13 @@ void GuiInputConfig::rowDone()
 
 void GuiInputConfig::setPress(const std::shared_ptr<TextComponent>& text)
 {
-	text->setText("PRESS ANYTHING");
+	text->setText("PRESSIONE QUALQUER COISA");
 	text->setColor(0x656565FF);
 }
 
 void GuiInputConfig::setNotDefined(const std::shared_ptr<TextComponent>& text)
 {
-	text->setText("-NOT DEFINED-");
+	text->setText("-NÃO DEFINIDO-");
 	text->setColor(0x999999FF);
 }
 
@@ -385,7 +385,7 @@ void GuiInputConfig::setAssignedTo(const std::shared_ptr<TextComponent>& text, I
 
 void GuiInputConfig::error(const std::shared_ptr<TextComponent>& text, const std::string& /*msg*/)
 {
-	text->setText("ALREADY TAKEN");
+	text->setText("JÁ UTILIZADO");
 	text->setColor(0x656565FF);
 }
 
@@ -397,7 +397,7 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	// (if it's the same as what it was before, allow it)
 	if(mTargetConfig->getMappedTo(input).size() > 0 && !mTargetConfig->isMappedTo(inputName[inputId], input) && strcmp(inputName[inputId], "HotKeyEnable") != 0)
 	{
-		error(mMappings.at(inputId), "Already mapped!");
+		error(mMappings.at(inputId), "JÁ MAPEADO!");
 		return false;
 	}
 
@@ -406,7 +406,7 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	input.configured = true;
 	mTargetConfig->mapInput(inputName[inputId], input);
 
-	LOG(LogInfo) << "  Mapping [" << input.string() << "] -> " << inputName[inputId];
+	LOG(LogInfo) << "  MAPEANDO [" << input.string() << "] -> " << inputName[inputId];
 
 	return true;
 }

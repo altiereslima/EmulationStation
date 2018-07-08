@@ -12,7 +12,6 @@ class ThemeData;
 struct HelpStyle
 {
 	Vector2f position;
-	Vector2f origin;
 	unsigned int iconColor;
 	unsigned int textColor;
 	std::shared_ptr<Font> font;

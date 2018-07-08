@@ -12,7 +12,7 @@
 #include "SystemData.h"
 
 GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : GuiComponent(window),
-	mSystem(system), mMenu(window, "OPTIONS"), fromPlaceholder(false), mFiltersChanged(false)
+	mSystem(system), mMenu(window, "OPÇÕES"), fromPlaceholder(false), mFiltersChanged(false)
 {
 	addChild(&mMenu);
 
@@ -34,7 +34,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 		if(curChar < startChar || curChar > endChar)
 			curChar = startChar;
 
-		mJumpToLetterList = std::make_shared<LetterList>(mWindow, "JUMP TO...", false);
+		mJumpToLetterList = std::make_shared<LetterList>(mWindow, "PULAR PARA A LETRA", false);
 		for (char c = startChar; c <= endChar; c++)
 		{
 			// check if c is a valid first letter in current list
@@ -50,7 +50,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 			}
 		}
 
-		row.addElement(std::make_shared<TextComponent>(mWindow, "JUMP TO...", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "PULAR PARA A LETRA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		row.addElement(mJumpToLetterList, false);
 		row.input_handler = [&](InputConfig* config, Input input) {
 			if(config->isMappedTo("a", input) && input.value)
@@ -67,24 +67,21 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 		mMenu.addRow(row);
 
 		// sort list by
-		mListSort = std::make_shared<SortList>(mWindow, "SORT GAMES BY", false);
+		mListSort = std::make_shared<SortList>(mWindow, "CLASSIFICAR JOGO POR", false);
 		for(unsigned int i = 0; i < FileSorts::SortTypes.size(); i++)
 		{
 			const FileData::SortType& sort = FileSorts::SortTypes.at(i);
 			mListSort->add(sort.description, &sort, i == 0); // TODO - actually make the sort type persistent
 		}
 
-		mMenu.addWithLabel("SORT GAMES BY", mListSort);
+		mMenu.addWithLabel("CLASSIFICAR JOGO POR", mListSort);
 	}
 	// show filtered menu
-	if(!Settings::getInstance()->getBool("ForceDisableFilters"))
-	{
-		row.elements.clear();
-		row.addElement(std::make_shared<TextComponent>(mWindow, "FILTER GAMELIST", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-		row.addElement(makeArrow(mWindow), false);
-		row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openGamelistFilter, this));
-		mMenu.addRow(row);		
-	}
+	row.elements.clear();
+	row.addElement(std::make_shared<TextComponent>(mWindow, "FILTRAR LISTA DE JOGO", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(makeArrow(mWindow), false);
+	row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openGamelistFilter, this));
+	mMenu.addRow(row);
 
 	std::map<std::string, CollectionSystemData> customCollections = CollectionSystemManager::get()->getCustomCollectionSystems();
 
@@ -93,7 +90,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 		CollectionSystemManager::get()->getCustomCollectionsBundle()->getName() == system->getName()))
 	{
 		row.elements.clear();
-		row.addElement(std::make_shared<TextComponent>(mWindow, "ADD/REMOVE GAMES TO THIS GAME COLLECTION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "ADIC./REM. JOGOS DESTA COLEÇÃO DE JOGOS", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::startEditMode, this));
 		mMenu.addRow(row);
 	}
@@ -101,7 +98,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 	if(UIModeController::getInstance()->isUIModeFull() && CollectionSystemManager::get()->isEditing())
 	{
 		row.elements.clear();
-		row.addElement(std::make_shared<TextComponent>(mWindow, "FINISH EDITING '" + Utils::String::toUpper(CollectionSystemManager::get()->getEditingCollection()) + "' COLLECTION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "FINALIZAR EDIÇÃO '" + Utils::String::toUpper(CollectionSystemManager::get()->getEditingCollection()) + "' COLEÇÃO", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::exitEditMode, this));
 		mMenu.addRow(row);
 	}
@@ -109,7 +106,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, SystemData* system) : Gui
 	if (UIModeController::getInstance()->isUIModeFull() && !fromPlaceholder && !(mSystem->isCollection() && file->getType() == FOLDER))
 	{
 		row.elements.clear();
-		row.addElement(std::make_shared<TextComponent>(mWindow, "EDIT THIS GAME'S METADATA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "EDITAR AS INFORMAÇÕES DESTE JOGO", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		row.addElement(makeArrow(mWindow), false);
 		row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openMetaDataEd, this));
 		mMenu.addRow(row);
@@ -257,7 +254,7 @@ HelpStyle GuiGamelistOptions::getHelpStyle()
 std::vector<HelpPrompt> GuiGamelistOptions::getHelpPrompts()
 {
 	auto prompts = mMenu.getHelpPrompts();
-	prompts.push_back(HelpPrompt("b", "close"));
+	prompts.push_back(HelpPrompt("b", "FECHAR"));
 	return prompts;
 }
 

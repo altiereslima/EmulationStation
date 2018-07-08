@@ -132,10 +132,6 @@ bool parseArgs(int argc, char* argv[])
 		{
 			Settings::getInstance()->setBool("ForceKid", true);
 		}
-		else if (strcmp(argv[i], "--force-disable-filters") == 0)
-		{
-			Settings::getInstance()->setBool("ForceDisableFilters", true);
-		}
 		else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
 		{
 #ifdef WIN32
@@ -162,9 +158,7 @@ bool parseArgs(int argc, char* argv[])
 				"--windowed			not fullscreen, should be used with --resolution\n"
 				"--vsync [1/on or 0/off]		turn vsync on or off (default is on)\n"
 				"--max-vram [size]		Max VRAM to use in Mb before swapping. 0 for unlimited\n"
-				"--force-kid		Force the UI mode to be Kid\n"
 				"--force-kiosk		Force the UI mode to be Kiosk\n"
-				"--force-disable-filters		Force the UI to ignore applied filters in gamelist\n"
 				"--help, -h			summon a sentient, angry tuba\n\n"
 				"More information available in README.md.\n";
 			return false; //exit after printing help
@@ -201,18 +195,18 @@ bool loadSystemConfigFile(const char** errorString)
 	if(!SystemData::loadConfig())
 	{
 		LOG(LogError) << "Error while parsing systems configuration file!";
-		*errorString = "IT LOOKS LIKE YOUR SYSTEMS CONFIGURATION FILE HAS NOT BEEN SET UP OR IS INVALID. YOU'LL NEED TO DO THIS BY HAND, UNFORTUNATELY.\n\n"
-			"VISIT EMULATIONSTATION.ORG FOR MORE INFORMATION.";
+		*errorString = "PARECE QUE O SEU ARQUIVO DE CONFIGURAÇÃO DOS SISTEMAS NÃO FOI CONFIGURADO OU É INVÁLIDO. VOCÊ PRECISARÁ FAZER ISSO MANUALMENTE, INFELIZMENTE.\n\n"
+			"VISITE EMULATIONSTATION.ORG PARA MAIS INFORMAÇÃO.";
 		return false;
 	}
 
 	if(SystemData::sSystemVector.size() == 0)
 	{
 		LOG(LogError) << "No systems found! Does at least one system have a game present? (check that extensions match!)\n(Also, make sure you've updated your es_systems.cfg for XML!)";
-		*errorString = "WE CAN'T FIND ANY SYSTEMS!\n"
-			"CHECK THAT YOUR PATHS ARE CORRECT IN THE SYSTEMS CONFIGURATION FILE, "
-			"AND YOUR GAME DIRECTORY HAS AT LEAST ONE GAME WITH THE CORRECT EXTENSION.\n\n"
-			"VISIT EMULATIONSTATION.ORG FOR MORE INFORMATION.";
+		*errorString = "NÃO ENCONTRAMOS NENHUM SISTEMA!\n"
+			"VERIFIQUE SE OS CAMINHOS ESTÃO CORRETOS NO ARQUIVO DE CONFIGURAÇÃO DOS SISTEMAS, "
+			"E SE O DIRETÓRIO DO JOGO TEM PELO MENOS UM JOGO COM A EXTENSÃO CORRETA.\n\n"
+			"VISITE EMULATIONSTATION.ORG PARA MAIS INFORMAÇÃO.";
 		return false;
 	}
 
@@ -225,7 +219,13 @@ void onExit()
 	Log::close();
 }
 
+#if WIN32
+#define argc __argc
+#define argv __argv
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpCmdLine, int nShowCmd)
+#else
 int main(int argc, char* argv[])
+#endif
 {
 	srand((unsigned int)time(NULL));
 
@@ -322,7 +322,7 @@ int main(int argc, char* argv[])
 		// we can't handle es_systems.cfg file problems inside ES itself, so display the error message then quit
 		window.pushGui(new GuiMsgBox(&window,
 			errorMsg,
-			"QUIT", [] {
+			"SAIR", [] {
 				SDL_Event* quit = new SDL_Event();
 				quit->type = SDL_QUIT;
 				SDL_PushEvent(quit);

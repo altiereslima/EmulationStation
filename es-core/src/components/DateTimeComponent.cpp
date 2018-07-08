@@ -54,9 +54,9 @@ bool DateTimeComponent::input(InputConfig* config, Input input)
 		}
 
 		int incDir = 0;
-		if(config->isMappedTo("up", input) || config->isMappedTo("pageup", input))
+		if(config->isMappedTo("up", input) || config->isMappedTo("leftshoulder", input))
 			incDir = 1;
-		else if(config->isMappedTo("down", input) || config->isMappedTo("pagedown", input))
+		else if(config->isMappedTo("down", input) || config->isMappedTo("rightshoulder", input))
 			incDir = -1;
 
 		if(incDir != 0)
@@ -207,7 +207,7 @@ std::string DateTimeComponent::getDisplayString(DisplayMode mode) const
 		{
 			//relative time
 			if(mTime.getTime() == 0)
-				return "never";
+				return "NUNCA";
 
 			Utils::Time::DateTime now(Utils::Time::now());
 			Utils::Time::Duration dur(now.getTime() - mTime.getTime());
@@ -215,13 +215,13 @@ std::string DateTimeComponent::getDisplayString(DisplayMode mode) const
 			char buf[64];
 
 			if(dur.getDays() > 0)
-				sprintf(buf, "%d day%s ago", dur.getDays(), (dur.getDays() > 1) ? "s" : "");
+				sprintf(buf, "%d DIA%S ATRÁS", dur.getDays(), (dur.getDays() > 1) ? "S" : "");
 			else if(dur.getHours() > 0)
-				sprintf(buf, "%d hour%s ago", dur.getHours(), (dur.getHours() > 1) ? "s" : "");
+				sprintf(buf, "%d HORA%S ATRÁS", dur.getHours(), (dur.getHours() > 1) ? "S" : "");
 			else if(dur.getMinutes() > 0)
-				sprintf(buf, "%d minute%s ago", dur.getMinutes(), (dur.getMinutes() > 1) ? "s" : "");
+				sprintf(buf, "%d MINUTO%S ATRÁS", dur.getMinutes(), (dur.getMinutes() > 1) ? "S" : "");
 			else
-				sprintf(buf, "%d second%s ago", dur.getSeconds(), (dur.getSeconds() > 1) ? "s" : "");
+				sprintf(buf, "%d SEGUNDO%S ATRÁS", dur.getSeconds(), (dur.getSeconds() > 1) ? "S" : "");
 			
 			return std::string(buf);
 		}
@@ -229,7 +229,7 @@ std::string DateTimeComponent::getDisplayString(DisplayMode mode) const
 	}
 	
 	if(mTime.getTime() == 0)
-		return "unknown";
+		return "DESCONHECIDO";
 
 	return Utils::Time::timeToString(mTime, fmt);
 }

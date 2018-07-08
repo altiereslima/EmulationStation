@@ -6,7 +6,7 @@
 #include "Log.h"
 #include "Settings.h"
 
-#define UNKNOWN_LABEL "UNKNOWN"
+#define UNKNOWN_LABEL "DESCONHECIDO"
 #define INCLUDE_UNKNOWN false;
 
 FileFilterIndex::FileFilterIndex()
@@ -15,13 +15,13 @@ FileFilterIndex::FileFilterIndex()
 	clearAllFilters();
 	FilterDataDecl filterDecls[] = {
 		//type 				//allKeys 				//filteredBy 		//filteredKeys 				//primaryKey 	//hasSecondaryKey 	//secondaryKey 	//menuLabel
-		{ FAVORITES_FILTER, &favoritesIndexAllKeys, &filterByFavorites,	&favoritesIndexFilteredKeys,"favorite",		false,				"",				"FAVORITES"	},
-		{ GENRE_FILTER, 	&genreIndexAllKeys, 	&filterByGenre,		&genreIndexFilteredKeys, 	"genre",		true,				"genre",		"GENRE"	},
-		{ PLAYER_FILTER, 	&playersIndexAllKeys, 	&filterByPlayers,	&playersIndexFilteredKeys, 	"players",		false,				"",				"PLAYERS"	},
-		{ PUBDEV_FILTER, 	&pubDevIndexAllKeys, 	&filterByPubDev,	&pubDevIndexFilteredKeys, 	"developer",	true,				"publisher",	"PUBLISHER / DEVELOPER"	},
-		{ RATINGS_FILTER, 	&ratingsIndexAllKeys, 	&filterByRatings,	&ratingsIndexFilteredKeys, 	"rating",		false,				"",				"RATING"	},
-		{ KIDGAME_FILTER, 	&kidGameIndexAllKeys, 	&filterByKidGame,	&kidGameIndexFilteredKeys, 	"kidgame",		false,				"",				"KIDGAME" },
-		{ HIDDEN_FILTER, 	&hiddenIndexAllKeys, 	&filterByHidden,	&hiddenIndexFilteredKeys, 	"hidden",		false,				"",				"HIDDEN" }
+		{ FAVORITES_FILTER, &favoritesIndexAllKeys, &filterByFavorites,	&favoritesIndexFilteredKeys,"favorite",		false,				"",				"FAVORITOS"	},
+		{ GENRE_FILTER, 	&genreIndexAllKeys, 	&filterByGenre,		&genreIndexFilteredKeys, 	"genre",		true,				"genre",		"GÊNERO"	},
+		{ PLAYER_FILTER, 	&playersIndexAllKeys, 	&filterByPlayers,	&playersIndexFilteredKeys, 	"players",		false,				"",				"JOGADORES"	},
+		{ PUBDEV_FILTER, 	&pubDevIndexAllKeys, 	&filterByPubDev,	&pubDevIndexFilteredKeys, 	"developer",	true,				"publisher",	"DISTRIBUIDOR / DESENVOLVEDOR"	},
+		{ RATINGS_FILTER, 	&ratingsIndexAllKeys, 	&filterByRatings,	&ratingsIndexFilteredKeys, 	"rating",		false,				"",				"AVALIAÇÃO"	},
+		{ KIDGAME_FILTER, 	&kidGameIndexAllKeys, 	&filterByKidGame,	&kidGameIndexFilteredKeys, 	"kidgame",		false,				"",				"INFANTIL" },
+		{ HIDDEN_FILTER, 	&hiddenIndexAllKeys, 	&filterByHidden,	&hiddenIndexFilteredKeys, 	"hidden",		false,				"",				"OCULTO" }
 	};
 
 	filterDataDecl = std::vector<FilterDataDecl>(filterDecls, filterDecls + sizeof(filterDecls) / sizeof(filterDecls[0]));
@@ -140,7 +140,7 @@ std::string FileFilterIndex::getIndexableKey(FileData* game, FilterIndexType typ
 						if (ratingNumber < 0)
 							ratingNumber = 0;
 
-						key = std::to_string(ratingNumber) + " STARS";
+						key = std::to_string(ratingNumber) + " ESTRELAS";
 					}
 					catch (int e)
 					{
@@ -173,7 +173,7 @@ std::string FileFilterIndex::getIndexableKey(FileData* game, FilterIndexType typ
 		}
 	}
 	key = Utils::String::trim(key);
-	if (key.empty() || (type == RATINGS_FILTER && key == "0 STARS")) {
+	if (key.empty() || (type == RATINGS_FILTER && key == "0 ESTRELAS")) {
 		key = UNKNOWN_LABEL;
 	}
 	return key;
@@ -247,19 +247,17 @@ void FileFilterIndex::resetFilters()
 
 void FileFilterIndex::setUIModeFilters()
 {
-	if(!Settings::getInstance()->getBool("ForceDisableFilters")){
-		if (!UIModeController::getInstance()->isUIModeFull())
-		{
-			filterByHidden = true;
-			std::vector<std::string> val = { "FALSE" };
-			setFilter(HIDDEN_FILTER, &val);
-		}
-		if (UIModeController::getInstance()->isUIModeKid())
-		{
-			filterByKidGame = true;
-			std::vector<std::string> val = { "TRUE" };
-			setFilter(KIDGAME_FILTER, &val);
-		}		
+	if (!UIModeController::getInstance()->isUIModeFull())
+	{
+		filterByHidden = true;
+		std::vector<std::string> val = { "FALSE" };
+		setFilter(HIDDEN_FILTER, &val);
+	}
+	if (UIModeController::getInstance()->isUIModeKid())
+	{
+		filterByKidGame = true;
+		std::vector<std::string> val = { "TRUE" };
+		setFilter(KIDGAME_FILTER, &val);
 	}
 }
 

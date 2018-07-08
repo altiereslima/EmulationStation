@@ -306,12 +306,12 @@ void Window::renderLoadingScreen()
 
 	ImageComponent splash(this, true);
 	splash.setResize(Renderer::getScreenWidth() * 0.6f, 0.0f);
-	splash.setImage(":/splash.svg");
+	splash.setImage(":/splash.png");
 	splash.setPosition((Renderer::getScreenWidth() - splash.getSize().x()) / 2, (Renderer::getScreenHeight() - splash.getSize().y()) / 2 * 0.6f);
 	splash.render(trans);
 
 	auto& font = mDefaultFonts.at(1);
-	TextCache* cache = font->buildTextCache("LOADING...", 0, 0, 0x656565FF);
+	TextCache* cache = font->buildTextCache("CARREGANDO...", 0, 0, 0x656565FF);
 	trans = trans.translate(Vector3f(Math::round((Renderer::getScreenWidth() - cache->metrics.size.x()) / 2.0f),
 		Math::round(Renderer::getScreenHeight() * 0.835f), 0.0f));
 	Renderer::setMatrix(trans);

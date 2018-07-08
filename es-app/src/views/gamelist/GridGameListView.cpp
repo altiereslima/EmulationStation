@@ -1,4 +1,4 @@
-#include "views/gamelist/GridGameListView.h"
+﻿#include "views/gamelist/GridGameListView.h"
 
 #include "animations/LambdaAnimation.h"
 #include "views/UIModeController.h"
@@ -29,29 +29,29 @@ GridGameListView::GridGameListView(Window* window, FileData* root) :
 	populateList(root->getChildrenListToDisplay());
 
 	// metadata labels + values
-	mLblRating.setText("Rating: ");
+	mLblRating.setText("AVALIAÇÃO: ");
 	addChild(&mLblRating);
 	addChild(&mRating);
-	mLblReleaseDate.setText("Released: ");
+	mLblReleaseDate.setText("LANÇAMENTO: ");
 	addChild(&mLblReleaseDate);
 	addChild(&mReleaseDate);
-	mLblDeveloper.setText("Developer: ");
+	mLblDeveloper.setText("DESENVOLVEDOR: ");
 	addChild(&mLblDeveloper);
 	addChild(&mDeveloper);
-	mLblPublisher.setText("Publisher: ");
+	mLblPublisher.setText("PUBLICADOR: ");
 	addChild(&mLblPublisher);
 	addChild(&mPublisher);
-	mLblGenre.setText("Genre: ");
+	mLblGenre.setText("GÊNERO: ");
 	addChild(&mLblGenre);
 	addChild(&mGenre);
-	mLblPlayers.setText("Players: ");
+	mLblPlayers.setText("JOGADORES: ");
 	addChild(&mLblPlayers);
 	addChild(&mPlayers);
-	mLblLastPlayed.setText("Last played: ");
+	mLblLastPlayed.setText("ÚLT. PARTIDA: ");
 	addChild(&mLblLastPlayed);
 	mLastPlayed.setDisplayMode(DateTimeComponent::DISP_RELATIVE_TO_NOW);
 	addChild(&mLastPlayed);
-	mLblPlayCount.setText("Times played: ");
+	mLblPlayCount.setText("VEZES JOGADO: ");
 	addChild(&mLblPlayCount);
 	addChild(&mPlayCount);
 
@@ -293,7 +293,7 @@ void GridGameListView::updateInfoPanel()
 void GridGameListView::addPlaceholder()
 {
 	// empty grid - add a placeholder
-	FileData* placeholder = new FileData(PLACEHOLDER, "<No Entries Found>", this->mRoot->getSystem()->getSystemEnvData(), this->mRoot->getSystem());
+	FileData* placeholder = new FileData(PLACEHOLDER, "<NENHUMA ENTRADA ENCONTRADA>", this->mRoot->getSystem()->getSystemEnvData(), this->mRoot->getSystem());
 	mGrid.add(placeholder->getName(), "", placeholder);
 }
 
@@ -364,14 +364,13 @@ std::vector<HelpPrompt> GridGameListView::getHelpPrompts()
 	std::vector<HelpPrompt> prompts;
 
 	if(Settings::getInstance()->getBool("QuickSystemSelect"))
-		prompts.push_back(HelpPrompt("lr", "system"));
-	prompts.push_back(HelpPrompt("up/down/left/right", "choose"));
-	prompts.push_back(HelpPrompt("a", "launch"));
-	prompts.push_back(HelpPrompt("b", "back"));
-	if(!UIModeController::getInstance()->isUIModeKid())
-		prompts.push_back(HelpPrompt("select", "options"));
+		prompts.push_back(HelpPrompt("lr", "SISTEMA"));
+	prompts.push_back(HelpPrompt("up/down/left/right", "ESCOLHER"));
+	prompts.push_back(HelpPrompt("a", "EXECUTAR"));
+	prompts.push_back(HelpPrompt("b", "VOLTAR"));
+	prompts.push_back(HelpPrompt("select", "OPÇÕES"));
 	if(mRoot->getSystem()->isGameSystem())
-		prompts.push_back(HelpPrompt("x", "random"));
+		prompts.push_back(HelpPrompt("x", "ALEATÓRIO"));
 	if(mRoot->getSystem()->isGameSystem() && !UIModeController::getInstance()->isUIModeKid())
 	{
 		std::string prompt = CollectionSystemManager::get()->getEditingCollection();

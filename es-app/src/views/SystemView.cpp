@@ -16,7 +16,7 @@ const int logoBuffersRight[] = { 1, 2, 5 };
 
 SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(window, LIST_SCROLL_STYLE_SLOW, LIST_ALWAYS_LOOP),
 										 mViewNeedsReload(true),
-										 mSystemInfo(window, "SYSTEM INFO", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_CENTER)
+										 mSystemInfo(window, "INFORMAÇÃO DO SISTEMA", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_CENTER)
 {
 	mCamOffset = 0;
 	mExtrasCamOffset = 0;
@@ -68,7 +68,7 @@ void SystemView::populate()
 					0x000000FF,
 					ALIGN_CENTER);
 				text->setSize(mCarousel.logoSize * mCarousel.logoScale);
-				text->applyTheme((*it)->getTheme(), "system", "logoText", ThemeFlags::FONT_PATH | ThemeFlags::FONT_SIZE | ThemeFlags::COLOR | ThemeFlags::FORCE_UPPERCASE | ThemeFlags::LINE_SPACING | ThemeFlags::TEXT);
+				text->applyTheme((*it)->getTheme(), "system", "logoText", ThemeFlags::FONT_PATH | ThemeFlags::FONT_SIZE | ThemeFlags::COLOR | ThemeFlags::FORCE_UPPERCASE);
 				e.data.logo = std::shared_ptr<GuiComponent>(text);
 
 				if (mCarousel.type == VERTICAL || mCarousel.type == VERTICAL_WHEEL)
@@ -122,7 +122,7 @@ void SystemView::populate()
 		if (!UIModeController::getInstance()->isUIModeFull())
 		{
 			Settings::getInstance()->setString("UIMode", "Full");
-			mWindow->pushGui(new GuiMsgBox(mWindow, "The selected UI mode has nothing to show,\n returning to UI mode: FULL", "OK", nullptr));
+			mWindow->pushGui(new GuiMsgBox(mWindow, "O MODO DE INTERFACE DO USUÁRIO SELECIONADO NÃO TEM NADA PARA MOSTRAR,\n RETORNANDO AO MODO DE INTERFACE: COMPLETA", "OK", nullptr));
 		}
 	}
 }
@@ -196,7 +196,7 @@ bool SystemView::input(InputConfig* config, Input input)
 			config->isMappedTo("up", input) ||
 			config->isMappedTo("down", input))
 			listInput(0);
-		if(!UIModeController::getInstance()->isUIModeKid() && config->isMappedTo("select", input) && Settings::getInstance()->getBool("ScreenSaverControls"))
+		if(config->isMappedTo("select", input) && Settings::getInstance()->getBool("ScreenSaverControls"))
 		{
 			mWindow->startScreenSaver();
 			mWindow->renderScreenSaver();
@@ -257,9 +257,9 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 		std::stringstream ss;
 
 		if (!getSelected()->isGameSystem())
-			ss << "CONFIGURATION";
+			ss << "CONFIGURAÇÃO";
 		else
-			ss << gameCount << " GAMES AVAILABLE";
+			ss << gameCount << " JOGOS DISPONÍVEIS";
 
 		mSystemInfo.setText(ss.str());
 	}, false, 1);
@@ -376,14 +376,14 @@ std::vector<HelpPrompt> SystemView::getHelpPrompts()
 {
 	std::vector<HelpPrompt> prompts;
 	if (mCarousel.type == VERTICAL || mCarousel.type == VERTICAL_WHEEL)
-		prompts.push_back(HelpPrompt("up/down", "choose"));
+		prompts.push_back(HelpPrompt("up/down", "ESCOLHER"));
 	else
-		prompts.push_back(HelpPrompt("left/right", "choose"));
-	prompts.push_back(HelpPrompt("a", "select"));
-	prompts.push_back(HelpPrompt("x", "random"));
+		prompts.push_back(HelpPrompt("left/right", "ESCOLHER"));
+	prompts.push_back(HelpPrompt("a", "SELECIONAR"));
+	prompts.push_back(HelpPrompt("x", "ALEATÓRIO"));
 
-	if (!UIModeController::getInstance()->isUIModeKid() && Settings::getInstance()->getBool("ScreenSaverControls"))
-		prompts.push_back(HelpPrompt("select", "launch screensaver"));
+	if (Settings::getInstance()->getBool("ScreenSaverControls"))
+		prompts.push_back(HelpPrompt("select", "PROTEÇÃO DE TELA"));
 
 	return prompts;
 }

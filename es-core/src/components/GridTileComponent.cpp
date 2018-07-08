@@ -151,9 +151,6 @@ bool GridTileComponent::isSelected() const
 void GridTileComponent::setImage(const std::string& path)
 {
 	mImage->setImage(path);
-
-	// Resize now to prevent flickering images when scrolling
-	resize();
 }
 
 void GridTileComponent::setImage(const std::shared_ptr<TextureResource>& texture)
@@ -178,7 +175,7 @@ void GridTileComponent::resize()
 {
 	const GridTileProperties& currentProperties = getCurrentProperties();
 
-	mImage->setMaxSize(currentProperties.mSize - currentProperties.mPadding * 2);
+	mImage->setMaxSize(currentProperties.mSize - currentProperties.mPadding);
 	mBackground.setCornerSize(currentProperties.mBackgroundCornerSize);
 	mBackground.fitTo(currentProperties.mSize - mBackground.getCornerSize() * 2);
 }

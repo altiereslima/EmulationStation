@@ -50,12 +50,12 @@ ScraperSearchComponent::ScraperSearchComponent(Window* window, SearchType type) 
 	mMD_Genre = std::make_shared<TextComponent>(mWindow, "", font, mdColor);
 	mMD_Players = std::make_shared<TextComponent>(mWindow, "", font, mdColor);
 
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "RATING:", font, mdLblColor), mMD_Rating, false));
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "RELEASED:", font, mdLblColor), mMD_ReleaseDate));
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "DEVELOPER:", font, mdLblColor), mMD_Developer));
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "PUBLISHER:", font, mdLblColor), mMD_Publisher));
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "GENRE:", font, mdLblColor), mMD_Genre));
-	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "PLAYERS:", font, mdLblColor), mMD_Players));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "AVALIAÇÃO:", font, mdLblColor), mMD_Rating, false));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "LANÇAMENTO:", font, mdLblColor), mMD_ReleaseDate));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "DESENVOLVEDOR:", font, mdLblColor), mMD_Developer));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "PUBLICADOR:", font, mdLblColor), mMD_Publisher));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "GÊNERO:", font, mdLblColor), mMD_Genre));
+	mMD_Pairs.push_back(MetaDataPair(std::make_shared<TextComponent>(mWindow, "JOGADORES:", font, mdLblColor), mMD_Players));
 
 	mMD_Grid = std::make_shared<ComponentGrid>(mWindow, Vector2i(2, (int)mMD_Pairs.size()*2 - 1));
 	unsigned int i = 0;
@@ -232,7 +232,7 @@ void ScraperSearchComponent::onSearchDone(const std::vector<ScraperSearchResult>
 	if(results.empty())
 	{
 		ComponentListRow row;
-		row.addElement(std::make_shared<TextComponent>(mWindow, "NO GAMES FOUND - SKIP", font, color), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "NENHUM JOGO ENCONTRADO - PULAR", font, color), true);
 
 		if(mSkipCallback)
 			row.makeAcceptInputHandler(mSkipCallback);
@@ -270,9 +270,9 @@ void ScraperSearchComponent::onSearchError(const std::string& error)
 {
 	LOG(LogInfo) << "ScraperSearchComponent search error: " << error;
 	mWindow->pushGui(new GuiMsgBox(mWindow, Utils::String::toUpper(error),
-		"RETRY", std::bind(&ScraperSearchComponent::search, this, mLastSearch),
-		"SKIP", mSkipCallback,
-		"CANCEL", mCancelCallback));
+		"REPETIR", std::bind(&ScraperSearchComponent::search, this, mLastSearch),
+		"PULAR", mSkipCallback,
+		"CANCELAR", mCancelCallback));
 }
 
 int ScraperSearchComponent::getSelectedIndex()
@@ -446,17 +446,17 @@ void ScraperSearchComponent::openInputScreen(ScraperSearchParams& params)
 	};
 
 	stop();
-	mWindow->pushGui(new GuiTextEditPopup(mWindow, "SEARCH FOR", 
+	mWindow->pushGui(new GuiTextEditPopup(mWindow, "PESQUISAR POR", 
 		// initial value is last search if there was one, otherwise the clean path name
 		params.nameOverride.empty() ? params.game->getCleanName() : params.nameOverride, 
-		searchForFunc, false, "SEARCH"));
+		searchForFunc, false, "PESQUISAR"));
 }
 
 std::vector<HelpPrompt> ScraperSearchComponent::getHelpPrompts()
 {
 	std::vector<HelpPrompt> prompts = mGrid.getHelpPrompts();
 	if(getSelectedIndex() != -1)
-		prompts.push_back(HelpPrompt("a", "accept result"));
+		prompts.push_back(HelpPrompt("a", "ACEITAR RESULTADO"));
 	
 	return prompts;
 }
