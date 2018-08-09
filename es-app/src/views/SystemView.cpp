@@ -259,7 +259,7 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 		if (!getSelected()->isGameSystem())
 			ss << "CONFIGURAÇÃO";
 		else
-			ss << gameCount << " JOGOS DISPONÍVEIS";
+			ss << ""; << "Aperte a tecla ENTER";
 
 		mSystemInfo.setText(ss.str());
 	}, false, 1);

@@ -311,7 +311,7 @@ void GuiMenu::openUISettings()
 	// enable filters (ForceDisableFilters)
 	auto enable_filter = std::make_shared<SwitchComponent>(mWindow);
 	enable_filter->setState(!Settings::getInstance()->getBool("ForceDisableFilters"));
-	s->addWithLabel("ENABLE FILTERS", enable_filter);
+	s->addWithLabel("HABILITAR FILTROS", enable_filter);
 	s->addSaveFunc([enable_filter] { 
 		bool filter_is_enabled = !Settings::getInstance()->getBool("ForceDisableFilters");
 		Settings::getInstance()->setBool("ForceDisableFilters", !enable_filter->getState()); 
