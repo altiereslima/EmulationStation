@@ -39,8 +39,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MENU PRI
 	if (isFullUI)
 		addEntry("CONFIGURAR CONTROLE", 0x777777FF, true, [this] { openConfigInput(); });
 
-	if (!(UIModeController::getInstance()->isUIModeKid() && Settings::getInstance()->getBool("hideQuitMenuOnKidUI")))
-		addEntry("SAIR", 0x777777FF, true, [this] {openQuitMenu(); });
+	addEntry("SAIR", 0x777777FF, true, [this] {openQuitMenu(); });
 
 	addChild(&mMenu);
 	addVersionInfo();
@@ -261,6 +260,7 @@ void GuiMenu::openUISettings()
 			if(needReload)
 			{
 				CollectionSystemManager::get()->updateSystemsList();
+				ViewController::get()->goToStart();
 				ViewController::get()->reloadAll(); // TODO - replace this with some sort of signal-based implementation
 			}
 		});
@@ -307,6 +307,16 @@ void GuiMenu::openUISettings()
 	show_help->setState(Settings::getInstance()->getBool("ShowHelpPrompts"));
 	s->addWithLabel("AJUDA NA TELA", show_help);
 	s->addSaveFunc([show_help] { Settings::getInstance()->setBool("ShowHelpPrompts", show_help->getState()); });
+
+	// enable filters (ForceDisableFilters)
+	auto enable_filter = std::make_shared<SwitchComponent>(mWindow);
+	enable_filter->setState(!Settings::getInstance()->getBool("ForceDisableFilters"));
+	s->addWithLabel("ENABLE FILTERS", enable_filter);
+	s->addSaveFunc([enable_filter] { 
+		bool filter_is_enabled = !Settings::getInstance()->getBool("ForceDisableFilters");
+		Settings::getInstance()->setBool("ForceDisableFilters", !enable_filter->getState()); 
+		if (enable_filter->getState() != filter_is_enabled) ViewController::get()->ReloadAndGoToStart();
+	});
 
 	mWindow->pushGui(s);
 

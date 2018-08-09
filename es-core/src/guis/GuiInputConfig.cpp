@@ -7,126 +7,42 @@
 #include "Log.h"
 #include "Window.h"
 
-// static const int inputCount = 10;
-// static const char* inputName[inputCount] = { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select", "PageUp", "PageDown" };
-// static const bool inputSkippable[inputCount] = { false, false, false, false, false, false, false, false, true, true };
-// static const char* inputDispName[inputCount] = { "UP", "DOWN", "LEFT", "RIGHT", "A", "B", "START", "SELECT", "PAGE UP", "PAGE DOWN" };
-// static const char* inputIcon[inputCount] = { ":/help/dpad_up.svg", ":/help/dpad_down.svg", ":/help/dpad_left.svg", ":/help/dpad_right.svg", 
-// 											":/help/button_a.svg", ":/help/button_b.svg", ":/help/button_start.svg", ":/help/button_select.svg", 
-// 											":/help/button_l.svg", ":/help/button_r.svg" };
+struct InputConfigStructure
+{
+	const char* name;
+	const bool  skippable;
+	const char* dispName;
+	const char* icon;
+};
 
 static const int inputCount = 25;
-static const char* inputName[inputCount] =
+static const InputConfigStructure GUI_INPUT_CONFIG_LIST[inputCount] =
 {
-	"Up",
-	"Down",
-	"Left",
-	"Right",
-	"Start",
-	"Select",
-	"A",
-	"B",
-	"X",
-	"Y",
-	"LeftShoulder",
-	"RightShoulder",
-	"LeftTrigger",
-	"RightTrigger",
-	"LeftThumb",
-	"RightThumb",
-	"LeftAnalogUp",
-	"LeftAnalogDown",
-	"LeftAnalogLeft",
-	"LeftAnalogRight",
-	"RightAnalogUp",
-	"RightAnalogDown",
-	"RightAnalogLeft",
-	"RightAnalogRight",
-	"HotKeyEnable"
-};
-static const bool inputSkippable[inputCount] =
-{
-	false,
-	false,
-	false,
-	false,
-	true,
-	true,
-	false,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true,
-	true
-};
-static const char* inputDispName[inputCount] =
-{
-	"D-PAD CIMA",
-	"D-PAD BAIXO",
-	"D-PAD ESQUERDA",
-	"D-PAD DIREITA",
-	"START",
-	"SELECT",
-	"A",
-	"B",
-	"X",
-	"Y",
-	"OMBRO ESQUERDO",
-	"OMBRO DIREITO",
-	"GATILHO ESQUERDO",
-	"GATILHO DIREITO",
-	"POLEGAR ESQUERDO",
-	"POLEGAR DIREITO",
-	"ANALÓGICO ESQ. CIMA",
-	"ANALÓGICO ESQ. BAIXO",
-	"ANALÓGICO ESQ. ESQUERDA",
-	"ANALÓGICO ESQ. DIREITA",
-	"ANALÓGICO DIR. CIMA",
-	"ANALÓGICO DIR. BAIXO",
-	"ANALÓGICO DIR. ESQUERDA",
-	"ANALÓGICO DIR. DIREITA",
-	"ATIVAR TECLA CHAVE"
-};
-static const char* inputIcon[inputCount] =
-{
-	":/help/dpad_up.svg",
-	":/help/dpad_down.svg",
-	":/help/dpad_left.svg",
-	":/help/dpad_right.svg",
-	":/help/button_start.svg",
-	":/help/button_select.svg",
-	":/help/button_a.svg",
-	":/help/button_b.svg",
-	":/help/button_x.svg",
-	":/help/button_y.svg",
-	":/help/button_l.svg",
-	":/help/button_r.svg",
-	":/help/button_l.svg",
-	":/help/button_r.svg",
-	":/help/analog_thumb.svg",
-	":/help/analog_thumb.svg",
-	":/help/analog_up.svg",
-	":/help/analog_down.svg",
-	":/help/analog_left.svg",
-	":/help/analog_right.svg",
-	":/help/analog_up.svg",
-	":/help/analog_down.svg",
-	":/help/analog_left.svg",
-	":/help/analog_right.svg",
-	":/help/button_hotkey.svg"
+	{ "Up",               false, "D-PAD CIMA",           ":/help/dpad_up.svg" },
+	{ "Down",             false, "D-PAD BAIXO",         ":/help/dpad_down.svg" },
+	{ "Left",             false, "D-PAD ESQUERDO",         ":/help/dpad_left.svg" },
+	{ "Right",            false, "D-PAD DIREITO",        ":/help/dpad_right.svg" },
+	{ "Start",            true,  "START",              ":/help/button_start.svg" },
+	{ "Select",           true,  "SELECT",             ":/help/button_select.svg" },
+	{ "A",                false, "BOTÃO A",    ":/help/button_a.svg" },
+	{ "B",                true,  "BOTÃO B",   ":/help/button_b.svg" },
+	{ "X",                true,  "BOTÃO X",   ":/help/button_x.svg" },
+	{ "Y",                true,  "BOTÃO Y",    ":/help/button_y.svg" },
+	{ "LeftShoulder",     true,  "OMBRO ESQUERDO",      ":/help/button_l.svg" },
+	{ "RightShoulder",    true,  "OMBRO DIREITO",     ":/help/button_r.svg" },
+	{ "LeftTrigger",      true,  "GATILHO ESQUERDO",       ":/help/button_lt.svg" },
+	{ "RightTrigger",     true,  "GATILHO DIREITO",      ":/help/button_rt.svg" },
+	{ "LeftThumb",        true,  "POLEGAR ESQUERDO",         ":/help/analog_thumb.svg" },
+	{ "RightThumb",       true,  "POLEGAR DIREITO",        ":/help/analog_thumb.svg" },
+	{ "LeftAnalogUp",     true,  "ANALÓGICO ESQ. CIMA",     ":/help/analog_up.svg" },
+	{ "LeftAnalogDown",   true,  "ANALÓGICO ESQ. BAIXO",   ":/help/analog_down.svg" },
+	{ "LeftAnalogLeft",   true,  "ANALÓGICO ESQ. ESQUERDA",   ":/help/analog_left.svg" },
+	{ "LeftAnalogRight",  true,  "ANALÓGICO ESQ. DIREITA",  ":/help/analog_right.svg" },
+	{ "RightAnalogUp",    true,  "ANALÓGICO DIR. CIMA",    ":/help/analog_up.svg" },
+	{ "RightAnalogDown",  true,  "ANALÓGICO DIR. BAIXO",  ":/help/analog_down.svg" },
+	{ "RightAnalogLeft",  true,  "ANALÓGICO DIR. ESQUERDA",  ":/help/analog_left.svg" },
+	{ "RightAnalogRight", true,  "ANALÓGICO DIR. DIREITA", ":/help/analog_right.svg" },
+	{ "HotKeyEnable",     true,  "ATIVAR TECLA CHAVE",      ":/help/button_hotkey.svg" }
 };
 
 //MasterVolUp and MasterVolDown are also hooked up, but do not appear on this screen.
@@ -178,7 +94,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 		
 		// icon
 		auto icon = std::make_shared<ImageComponent>(mWindow);
-		icon->setImage(inputIcon[i]);
+		icon->setImage(GUI_INPUT_CONFIG_LIST[i].icon);
 		icon->setColorShift(0x777777FF);
 		icon->setResize(0, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 1.25f);
 		row.addElement(icon, false);
@@ -188,7 +104,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 		spacer->setSize(16, 0);
 		row.addElement(spacer, false);
 
-		auto text = std::make_shared<TextComponent>(mWindow, inputDispName[i], Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+		auto text = std::make_shared<TextComponent>(mWindow, GUI_INPUT_CONFIG_LIST[i].dispName, Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
 		row.addElement(text, true);
 
 		auto mapping = std::make_shared<TextComponent>(mWindow, "-NÃO DEFINIDO-", Font::get(FONT_SIZE_MEDIUM, FONT_PATH_LIGHT), 0x999999FF, ALIGN_RIGHT);
@@ -251,7 +167,7 @@ GuiInputConfig::GuiInputConfig(Window* window, InputConfig* target, bool reconfi
 
 	// only show "HOLD TO SKIP" if this input is skippable
 	mList->setCursorChangedCallback([this](CursorState /*state*/) {
-		bool skippable = inputSkippable[mList->getCursorId()];
+		bool skippable = GUI_INPUT_CONFIG_LIST[mList->getCursorId()].skippable;
 		mSubtitle2->setOpacity(skippable * 255);
 	});
 
@@ -317,7 +233,7 @@ void GuiInputConfig::onSizeChanged()
 
 void GuiInputConfig::update(int deltaTime)
 {
-	if(mConfiguringRow && mHoldingInput && inputSkippable[mHeldInputId])
+	if(mConfiguringRow && mHoldingInput && GUI_INPUT_CONFIG_LIST[mHeldInputId].skippable)
 	{
 		int prevSec = mHeldTime / 1000;
 		mHeldTime += deltaTime;
@@ -395,7 +311,7 @@ bool GuiInputConfig::assign(Input input, int inputId)
 
 	// if this input is mapped to something other than "nothing" or the current row, error
 	// (if it's the same as what it was before, allow it)
-	if(mTargetConfig->getMappedTo(input).size() > 0 && !mTargetConfig->isMappedTo(inputName[inputId], input) && strcmp(inputName[inputId], "HotKeyEnable") != 0)
+	if(mTargetConfig->getMappedTo(input).size() > 0 && !mTargetConfig->isMappedTo(GUI_INPUT_CONFIG_LIST[inputId].name, input) && strcmp(GUI_INPUT_CONFIG_LIST[inputId].name, "HotKeyEnable") != 0)
 	{
 		error(mMappings.at(inputId), "JÁ MAPEADO!");
 		return false;
@@ -404,14 +320,14 @@ bool GuiInputConfig::assign(Input input, int inputId)
 	setAssignedTo(mMappings.at(inputId), input);
 	
 	input.configured = true;
-	mTargetConfig->mapInput(inputName[inputId], input);
+	mTargetConfig->mapInput(GUI_INPUT_CONFIG_LIST[inputId].name, input);
 
-	LOG(LogInfo) << "  MAPEANDO [" << input.string() << "] -> " << inputName[inputId];
+	LOG(LogInfo) << "  MAPEANDO [" << input.string() << "] -> " << GUI_INPUT_CONFIG_LIST[inputId].name;
 
 	return true;
 }
 
 void GuiInputConfig::clearAssignment(int inputId)
 {
-	mTargetConfig->unmapInput(inputName[inputId]);
+	mTargetConfig->unmapInput(GUI_INPUT_CONFIG_LIST[inputId].name);
 }

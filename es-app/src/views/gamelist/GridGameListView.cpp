@@ -368,6 +368,7 @@ std::vector<HelpPrompt> GridGameListView::getHelpPrompts()
 	prompts.push_back(HelpPrompt("up/down/left/right", "ESCOLHER"));
 	prompts.push_back(HelpPrompt("a", "EXECUTAR"));
 	prompts.push_back(HelpPrompt("b", "VOLTAR"));
+	if(!UIModeController::getInstance()->isUIModeKid())
 	prompts.push_back(HelpPrompt("select", "OPÇÕES"));
 	if(mRoot->getSystem()->isGameSystem())
 		prompts.push_back(HelpPrompt("x", "ALEATÓRIO"));
