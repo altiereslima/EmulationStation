@@ -413,67 +413,6 @@ void GuiMenu::openConfigInput()
 
 }
 
-void GuiMenu::openQuitMenu()
-{
-	auto s = new GuiSettings(mWindow, "SAIR");
-
-	Window* window = mWindow;
-
-	ComponentListRow row;
-	if (UIModeController::getInstance()->isUIModeFull())
-	{
-		row.makeAcceptInputHandler([window] {
-			window->pushGui(new GuiMsgBox(window, "DESEJA REINICIAR?", "SIM",
-				[] {
-				if(runRestartCommand() != 0)
-					LOG(LogWarning) << "Restart terminated with non-zero result!";
-			}, "NÃO", nullptr));
-		});
-		row.addElement(std::make_shared<TextComponent>(window, "REINICIAR O COMPUTADOR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-		s->addRow(row);
-
-
-
-		if(Settings::getInstance()->getBool("ShowExit"))
-		{
-			row.elements.clear();
-			row.makeAcceptInputHandler([window] {
-				window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
-					[] {
-					SDL_Event ev;
-					ev.type = SDL_QUIT;
-					SDL_PushEvent(&ev);
-				}, "NÃO", nullptr));
-			});
-			row.addElement(std::make_shared<TextComponent>(window, "SAIR DO EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-			s->addRow(row);
-		}
-	}
-	row.elements.clear();
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
-			[] {
-			if (quitES("/tmp/es-sysrestart") != 0)
-				LOG(LogWarning) << "Exit terminated with non-zero result!";
-		}, "NÃO", nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, "SAIR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
-
-	row.elements.clear();
-	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE DESLIGAR?", "SIM",
-			[] {
-			if (runShutdownCommand() != 0)
-				LOG(LogWarning) << "Shutdown terminated with non-zero result!";
-		}, "NÃO", nullptr));
-	});
-	row.addElement(std::make_shared<TextComponent>(window, "DESLIGAR O COMPUTADOR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
-
-	mWindow->pushGui(s);
-}
-
 void GuiMenu::addVersionInfo()
 {
 	std::string  buildDate = (Settings::getInstance()->getBool("Debug") ? std::string( "   (" + Utils::String::toUpper(PROGRAM_BUILT_STRING) + ")") : (""));
