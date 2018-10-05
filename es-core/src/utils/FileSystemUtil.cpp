@@ -1,3 +1,5 @@
+#define _FILE_OFFSET_BITS 64
+
 #include "utils/FileSystemUtil.h"
 
 #include "Settings.h"
@@ -11,15 +13,13 @@
 #define getcwd _getcwd
 #define mkdir(x,y) _mkdir(x)
 #define snprintf _snprintf
+#define stat64 _stat64
 #define unlink _unlink
 #define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
 #define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
-#define stat64 _stat64
-#define lstat64 _lstat64
 #else // _WIN32
 #include <dirent.h>
 #include <unistd.h>
-#define __stat64 stat64
 #endif // _WIN32
 
 namespace Utils
@@ -227,6 +227,10 @@ namespace Utils
 
 			// remove double '/'
 			while((offset = path.find("//")) != std::string::npos)
+				path.erase(offset, 1);
+
+			// remove trailing '/'
+			while(path.length() && ((offset = path.find_last_of('/')) == (path.length() - 1)))
 				path.erase(offset, 1);
 
 			// return generic path
@@ -500,10 +504,10 @@ namespace Utils
 				CloseHandle(hFile);
 			}
 #else // _WIN32
-			struct __stat64 info;
+			struct stat info;
 
 			// check if lstat succeeded
-			if(lstat64(path.c_str(), &info) == 0)
+			if(lstat(path.c_str(), &info) == 0)
 			{
 				resolved.resize(info.st_size);
 				if(readlink(path.c_str(), (char*)resolved.data(), resolved.size()) > 0)
@@ -556,9 +560,9 @@ namespace Utils
 		bool exists(const std::string& _path)
 		{
 			std::string path = getGenericPath(_path);
-			struct __stat64 info;
+			struct stat64 info;
 
-			// check if stat succeeded
+			// check if stat64 succeeded
 			return (stat64(path.c_str(), &info) == 0);
 
 		} // exists
@@ -578,9 +582,9 @@ namespace Utils
 		bool isRegularFile(const std::string& _path)
 		{
 			std::string path = getGenericPath(_path);
-			struct __stat64 info;
+			struct stat64 info;
 
-			// check if stat succeeded
+			// check if stat64 succeeded
 			if(stat64(path.c_str(), &info) != 0)
 				return false;
 
@@ -592,10 +596,10 @@ namespace Utils
 		bool isDirectory(const std::string& _path)
 		{
 			std::string path = getGenericPath(_path);
-			struct __stat64 info;
+			struct stat info;
 
 			// check if stat succeeded
-			if(stat64(path.c_str(), &info) != 0)
+			if(stat(path.c_str(), &info) != 0)
 				return false;
 
 			// check for S_IFDIR attribute
@@ -613,10 +617,10 @@ namespace Utils
 			if((Attributes != INVALID_FILE_ATTRIBUTES) && (Attributes & FILE_ATTRIBUTE_REPARSE_POINT))
 				return true;
 #else // _WIN32
-			struct __stat64 info;
+			struct stat info;
 
 			// check if lstat succeeded
-			if(lstat64(path.c_str(), &info) != 0)
+			if(lstat(path.c_str(), &info) != 0)
 				return false;
 
 			// check for S_IFLNK attribute
@@ -652,10 +656,10 @@ namespace Utils
 		{
 			std::string path1 = getGenericPath(_path1);
 			std::string path2 = getGenericPath(_path2);
-			struct __stat64 info1;
-			struct __stat64 info2;
+			struct stat64 info1;
+			struct stat64 info2;
 
-			// check if stat succeeded
+			// check if stat64 succeeded
 			if((stat64(path1.c_str(), &info1) != 0) || (stat64(path2.c_str(), &info2) != 0))
 				return false;
 

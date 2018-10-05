@@ -26,10 +26,10 @@ CollectionSystemManager::CollectionSystemManager(Window* window) : mWindow(windo
 {
 	CollectionSystemDecl systemDecls[] = {
 		//type                  name            long name            //default sort              // theme folder            // isCustom
-		{ AUTO_ALL_GAMES,       "all",          "TODOS OS JOGOS",         "NOME DO ARQUIVO, ↓",      "auto-allgames",           false },
-		{ AUTO_LAST_PLAYED,     "recent",       "ÚLT. PARTIDA",       "ÚLT. PARTIDA JOGADA, ↑",  "auto-lastplayed",         false },
-		{ AUTO_FAVORITES,       "favorites",    "FAVORITOS",         "NOME DO ARQUIVO, ↓",      "auto-favorites",          false },
-		{ CUSTOM_COLLECTION,    myCollectionsName,  "COLEÇÕES",    "NOME DO ARQUIVO, ↓",      "custom-collections",      true }
+		{ AUTO_ALL_GAMES,       "all",          "TODOS OS JOGOS",    "NOME DO ARQUIVO, ↓",      "auto-allgames",             false },
+		{ AUTO_LAST_PLAYED,     "recent",       "ÚLT. PARTIDA",      "ÚLT. PARTIDA JOGADA, ↑",  "auto-lastplayed",           false },
+		{ AUTO_FAVORITES,       "favorites",    "FAVORITOS",         "NOME DO ARQUIVO, ↓",      "auto-favorites",            false },
+		{ CUSTOM_COLLECTION,    myCollectionsName,  "COLEÇÕES",       "NOME DO ARQUIVO, ↓",      "custom-collections",       true }
 	};
 
 	// create a map
@@ -973,8 +973,7 @@ std::vector<std::string> CollectionSystemManager::getCollectionsFromConfigFolder
 			if (Utils::FileSystem::isRegularFile(*it))
 			{
 				// it's a file
-				std::string file = *it;
-				std::string filename = file.substr(configPath.size());
+				std::string filename = Utils::FileSystem::getFileName(*it);
 
 				// need to confirm filename matches config format
 				if (filename != "custom-.cfg" && Utils::String::startsWith(filename, "custom-") && Utils::String::endsWith(filename, ".cfg"))
