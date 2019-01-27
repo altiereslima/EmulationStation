@@ -55,8 +55,10 @@ void GuiMenu::openScraperSettings()
 	// scrape from
 	auto scraper_list = std::make_shared< OptionListComponent< std::string > >(mWindow, "OBTER DADOS", false);
 	std::vector<std::string> scrapers = getScraperList();
+
+	// Select either the first entry of the one read from the settings, just in case the scraper from settings has vanished.
 	for(auto it = scrapers.cbegin(); it != scrapers.cend(); it++)
-		scraper_list->add(*it, *it, *it == Settings::getInstance()->getString("Scraper"));
+		scraper_list->add(*it, *it, *it == Settings::getInstance()->getString("Scraper") || it==scrapers.cbegin());
 
 	s->addWithLabel("OBTER DE", scraper_list);
 	s->addSaveFunc([scraper_list] { Settings::getInstance()->setString("Scraper", scraper_list->getSelected()); });
@@ -494,7 +496,7 @@ void GuiMenu::openQuitMenu()
 		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
 			[] {
 			if (quitES("/tmp/es-sysrestart") != 0)
-				LOG(LogWarning) << "Exit terminated with non-zero result!";
+				LOG(LogWarning) << "Restart terminated with non-zero result!";
 		}, "NÃO", nullptr));
 	});
 	row.addElement(std::make_shared<TextComponent>(window, "SAIR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
