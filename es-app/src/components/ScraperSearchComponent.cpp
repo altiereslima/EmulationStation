@@ -234,8 +234,8 @@ void ScraperSearchComponent::onSearchDone(const std::vector<ScraperSearchResult>
 		// Check if the scraper used is still valid
 		if (!isValidConfiguredScraper())
 		{
-			mWindow->pushGui(new GuiMsgBox(mWindow, Utils::String::toUpper("Configured scraper is no longer available.\nPlease change the scraping source in the settings."),
-				"FINISH", mSkipCallback));
+			mWindow->pushGui(new GuiMsgBox(mWindow, Utils::String::toUpper("A FONTE DE OBTENÇÃO DE DADOS CONFIGURADA NÃO ESTÁ MAIS DISPONÍVEL.\NPOR FAVOR, ALTERE A FONTE DE OBTENÇÃO NAS CONFIGURAÇÕES."),
+				"FINALIZAR", mSkipCallback));
 		}
 		else
 		{
