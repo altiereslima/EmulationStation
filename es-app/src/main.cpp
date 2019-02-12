@@ -351,7 +351,7 @@ int main(int argc, char* argv[])
 	ViewController::get()->preload();
 
 	if(splashScreen && splashScreenProgress)
-		window.renderLoadingScreen("Pronto.");
+		window.renderLoadingScreen("PRONTO.");
 
 	//choose which GUI to open depending on if an input configuration already exists
 	if(errorMsg == NULL)
