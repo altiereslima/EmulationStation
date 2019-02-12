@@ -437,7 +437,7 @@ void ViewController::preload()
 		{
 			i++;
 			char buffer[100];
-			sprintf (buffer, "Loading '%s' (%d/%d)",
+			sprintf (buffer, "CARREGANDO '%s' (%d/%d)",
 				(*it)->getFullName().c_str(), i, SystemData::sSystemVector.size());
 			mWindow->renderLoadingScreen(std::string(buffer));
 		}
