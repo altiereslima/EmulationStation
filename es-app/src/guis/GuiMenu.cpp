@@ -99,7 +99,7 @@ void GuiMenu::openSoundSettings()
 	{
 #if defined(__linux__)
 		// audio card
-		auto audio_card = std::make_shared< OptionListComponent<std::string> >(mWindow, "AUDIO CARD", false);
+		auto audio_card = std::make_shared< OptionListComponent<std::string> >(mWindow, "PLACA DE SOM", false);
 		std::vector<std::string> audio_cards;
 	#ifdef _RPI_
 		// RPi Specific  Audio Cards
