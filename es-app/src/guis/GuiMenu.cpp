@@ -58,7 +58,7 @@ void GuiMenu::openScraperSettings()
 
 	// Select either the first entry of the one read from the settings, just in case the scraper from settings has vanished.
 	for(auto it = scrapers.cbegin(); it != scrapers.cend(); it++)
-		scraper_list->add(*it, *it, *it == Settings::getInstance()->getString("Scraper") || it==scrapers.cbegin());
+		scraper_list->add(*it, *it, *it == Settings::getInstance()->getString("Scraper"));
 
 	s->addWithLabel("OBTER DE", scraper_list);
 	s->addSaveFunc([scraper_list] { Settings::getInstance()->setString("Scraper", scraper_list->getSelected()); });
@@ -406,6 +406,11 @@ void GuiMenu::openOtherSettings()
 	parse_gamelists->setState(Settings::getInstance()->getBool("ParseGamelistOnly"));
 	s->addWithLabel("ANALISAR APENAS LISTA DE JOGOS", parse_gamelists);
 	s->addSaveFunc([parse_gamelists] { Settings::getInstance()->setBool("ParseGamelistOnly", parse_gamelists->getState()); });
+
+	auto local_art = std::make_shared<SwitchComponent>(mWindow);
+	local_art->setState(Settings::getInstance()->getBool("LocalArt"));
+	s->addWithLabel("SEARCH FOR LOCAL ART", local_art);
+	s->addSaveFunc([local_art] { Settings::getInstance()->setBool("LocalArt", local_art->getState()); });
 
 	// hidden files
 	auto hidden_files = std::make_shared<SwitchComponent>(mWindow);
