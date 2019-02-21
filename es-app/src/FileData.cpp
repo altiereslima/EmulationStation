@@ -283,8 +283,7 @@ void FileData::launchGame(Window* window)
 	command = Utils::String::replace(command, "%ROM_RAW%", rom_raw);
 
 	LOG(LogInfo) << "	" << command;
-	// INICIA NOVA ROTINA DE EXECUÇÃO
-	int exitCode = runWSystemCommand(command);
+	int exitCode = runSystemCommand(command);
 
 	if(exitCode != 0)
 	{
