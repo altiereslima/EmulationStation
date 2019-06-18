@@ -13,6 +13,7 @@
 #include "views/ViewController.h"
 #include "CollectionSystemManager.h"
 #include "EmulationStation.h"
+#include "Scripting.h"
 #include "SystemData.h"
 #include "VolumeControl.h"
 #include <SDL_events.h>
@@ -216,7 +217,7 @@ void GuiMenu::openUISettings()
 		if (selectedMode != "Full")
 		{
 			std::string msg = "VOCÊ ESTÁ MUDANDO A INTERFACE PARA O MODO RESTRITO:\n" +selectedMode + "\n";
-			msg += "ISSO ESCONDE A MAIORIA DAS OPÇÕES DO MENU PARA EVITAR MUDANÇAS NO SISTEMA.  ";
+			msg += "ISSO ESCONDE A MAIORIA DAS OPÇÕES DO MENU PARA EVITAR MUDANÇAS NO SISTEMA.\n";
 			msg += "PARA DESBLOQUEAR E RETORNAR À INTERFACE COMPLETA, INSIRA ESTE COMANDO: \n";
 			msg += "\"" + UIModeController::getInstance()->getFormattedPassKeyStr() + "\"\n\n";
 			msg += "VOCÊ DESEJA PROSSEGUIR?";
@@ -296,13 +297,15 @@ void GuiMenu::openUISettings()
 		s->addSaveFunc([window, theme_set]
 		{
 			bool needReload = false;
-			if(Settings::getInstance()->getString("ThemeSet") != theme_set->getSelected())
+			std::string oldTheme = Settings::getInstance()->getString("ThemeSet");
+			if(oldTheme != theme_set->getSelected())
 				needReload = true;
 
 			Settings::getInstance()->setString("ThemeSet", theme_set->getSelected());
 
 			if(needReload)
 			{
+				Scripting::fireEvent("theme-changed", theme_set->getSelected(), oldTheme);
 				CollectionSystemManager::get()->updateSystemsList();
 				ViewController::get()->goToStart();
 				ViewController::get()->reloadAll(); // TODO - replace this with some sort of signal-based implementation
