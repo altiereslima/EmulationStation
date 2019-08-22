@@ -30,7 +30,6 @@ private:
 	std::shared_ptr< OptionListComponent<std::string> > customOptionList;
 	std::shared_ptr<SwitchComponent> sortAllSystemsSwitch;
 	std::shared_ptr<SwitchComponent> bundleCustomCollections;
-	std::shared_ptr<SwitchComponent> toggleSystemNameInCollections;
 	MenuComponent mMenu;
 	SystemData* mSystem;
 };

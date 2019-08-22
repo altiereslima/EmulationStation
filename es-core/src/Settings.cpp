@@ -117,11 +117,6 @@ void Settings::setDefaults()
 	#ifdef _RPI_
 		// we're defaulting to OMX Player for full screen video on the Pi
 		mBoolMap["ScreenSaverOmxPlayer"] = true;
-		// use OMX Player defaults
-		mStringMap["SubtitleFont"] = "/usr/share/fonts/truetype/freefont/FreeSans.ttf";
-		mStringMap["SubtitleItalicFont"] = "/usr/share/fonts/truetype/freefont/FreeSansOblique.ttf";
-		mIntMap["SubtitleSize"] = 55;
-		mStringMap["SubtitleAlignment"] = "left";
 	#else
 		mBoolMap["ScreenSaverOmxPlayer"] = false;
 	#endif
@@ -134,7 +129,6 @@ void Settings::setDefaults()
 	mStringMap["OMXAudioDev"] = "both";
 	mStringMap["CollectionSystemsAuto"] = "";
 	mStringMap["CollectionSystemsCustom"] = "";
-	mBoolMap["CollectionShowSystemInfo"] = true;
 	mBoolMap["SortAllSystems"] = false;
 	mBoolMap["UseCustomCollectionsSystem"] = true;
 

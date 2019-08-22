@@ -8,8 +8,6 @@
 #endif
 #include <fcntl.h>
 
-#include "Log.h"
-
 int runShutdownCommand()
 {
 #ifdef WIN32 // windows
@@ -42,13 +40,11 @@ int runSystemCommand(const std::string& cmd_utf8)
 #endif
 }
 
-QuitMode quitMode = QuitMode::QUIT;
-
-int quitES(QuitMode mode)
+int quitES(const std::string& filename)
 {
-	quitMode = mode;
-
-	SDL_Event *quit = new SDL_Event();
+	if (!filename.empty())
+		touch(filename);
+	SDL_Event* quit = new SDL_Event();
 	quit->type = SDL_QUIT;
 	SDL_PushEvent(quit);
 	return 0;
@@ -65,25 +61,4 @@ void touch(const std::string& filename)
 	if (fd >= 0)
 		close(fd);
 #endif
-}
-
-void processQuitMode()
-{
-	switch (quitMode)
-	{
-	case QuitMode::RESTART:	
-		LOG(LogInfo) << "Restarting EmulationStation";
-		touch("/tmp/es-restart");
-		break;	
-	case QuitMode::REBOOT:	
-		LOG(LogInfo) << "Rebooting system";
-		touch("/tmp/es-sysrestart");
-		runRestartCommand();
-		break;	
-	case QuitMode::SHUTDOWN:
-		LOG(LogInfo) << "Shutting system down";
-		touch("/tmp/es-shutdown");
-		runShutdownCommand();
-		break;
-	}
 }

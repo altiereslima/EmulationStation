@@ -348,14 +348,11 @@ void CollectionFileData::refreshMetadata()
 const std::string& CollectionFileData::getName()
 {
 	if (mDirty) {
-		mCollectionFileName = Utils::String::removeParenthesis(mSourceFileData->metadata.get("name"));
+		mCollectionFileName  = Utils::String::removeParenthesis(mSourceFileData->metadata.get("name"));
 		mCollectionFileName += " [" + Utils::String::toUpper(mSourceFileData->getSystem()->getName()) + "]";
 		mDirty = false;
 	}
-
-	if (Settings::getInstance()->getBool("CollectionShowSystemInfo"))
-		return mCollectionFileName;
-	return mSourceFileData->metadata.get("name");
+	return mCollectionFileName;
 }
 
 // returns Sort Type based on a string description

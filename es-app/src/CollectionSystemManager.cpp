@@ -1032,6 +1032,7 @@ bool CollectionSystemManager::includeFileInAutoCollections(FileData* file)
 	return file->getName() != "kodi" && file->getSystem()->isGameSystem();
 }
 
+
 std::string getCustomCollectionConfigPath(std::string collectionName)
 {
 	return getCollectionsFolder() + "/custom-" + collectionName + ".cfg";
