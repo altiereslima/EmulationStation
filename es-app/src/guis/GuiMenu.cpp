@@ -475,7 +475,8 @@ void GuiMenu::openQuitMenu()
 		row.makeAcceptInputHandler([window] {
 			window->pushGui(new GuiMsgBox(window, "DESEJA REINICIAR?", "SIM",
 				[] {
-				if(runRestartCommand() != 0)
+				Scripting::fireEvent("quit");
+				if(quitES(QuitMode::RESTART) != 0)
 					LOG(LogWarning) << "Restart terminated with non-zero result!";
 			}, "NÃO", nullptr));
 		});
@@ -490,10 +491,9 @@ void GuiMenu::openQuitMenu()
 			row.makeAcceptInputHandler([window] {
 				window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
 					[] {
-					SDL_Event ev;
-					ev.type = SDL_QUIT;
-					SDL_PushEvent(&ev);
-				}, "NÃO", nullptr));
+					Scripting::fireEvent("quit");
+					quitES();
+				}, "NO", nullptr));
 			});
 			row.addElement(std::make_shared<TextComponent>(window, "SAIR DO EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 			s->addRow(row);
@@ -503,7 +503,9 @@ void GuiMenu::openQuitMenu()
 	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
 			[] {
-			if (quitES("/tmp/es-sysrestart") != 0)
+			Scripting::fireEvent("quit", "reboot");
+			Scripting::fireEvent("reboot");
+			if (quitES(QuitMode::REBOOT) != 0)
 				LOG(LogWarning) << "Restart terminated with non-zero result!";
 		}, "NÃO", nullptr));
 	});
@@ -514,7 +516,9 @@ void GuiMenu::openQuitMenu()
 	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE DESLIGAR?", "SIM",
 			[] {
-			if (runShutdownCommand() != 0)
+			Scripting::fireEvent("quit", "shutdown");
+			Scripting::fireEvent("shutdown");
+			if (quitES(QuitMode::SHUTDOWN) != 0)
 				LOG(LogWarning) << "Shutdown terminated with non-zero result!";
 		}, "NÃO", nullptr));
 	});
