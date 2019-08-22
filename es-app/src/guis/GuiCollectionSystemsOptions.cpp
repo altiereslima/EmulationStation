@@ -9,7 +9,7 @@
 #include "CollectionSystemManager.h"
 #include "Window.h"
 
-GuiCollectionSystemsOptions::GuiCollectionSystemsOptions(Window* window) : GuiComponent(window), mMenu(window, "CONFIGURAR COLECAO DE JOGOS")
+GuiCollectionSystemsOptions::GuiCollectionSystemsOptions(Window* window) : GuiComponent(window), mMenu(window, "CONFIGURAR COLEÇÃO DE JOGOS")
 {
 	initializeMenu();
 }
@@ -27,7 +27,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	std::vector<std::string> unusedFolders = CollectionSystemManager::get()->getUnusedSystemsFromTheme();
 	if (unusedFolders.size() > 0)
 	{
-		addEntry("CRIAR NOVA COLECAO PERSONALIZADA DO TEMA", 0x777777FF, true,
+		addEntry("CRIAR NOVA COLEÇÃO PERSONALIZADA DO TEMA", 0x777777FF, true,
 		[this, unusedFolders] {
 			auto s = new GuiSettings(mWindow, "SELECIONAR PASTA DOS TEMAS");
 			std::shared_ptr< OptionListComponent<std::string> > folderThemes = std::make_shared< OptionListComponent<std::string> >(mWindow, "SELECIONAR PASTA DOS TEMAS", true);
@@ -52,7 +52,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	}
 
 	ComponentListRow row;
-	row.addElement(std::make_shared<TextComponent>(mWindow, "CRIAR NOVA COLECAO PERSONALIZADA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, "CRIAR NOVA COLEÇÃO PERSONALIZADA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	auto createCustomCollection = [this](const std::string& newVal) {
 		std::string name = newVal;
 		// we need to store the first Gui and remove it, as it'll be deleted by the actual Gui
@@ -62,27 +62,27 @@ void GuiCollectionSystemsOptions::initializeMenu()
 		createCollection(name);
 	};
 	row.makeAcceptInputHandler([this, createCustomCollection] {
-		mWindow->pushGui(new GuiTextEditPopup(mWindow, "NOME DA NOVA COLECAO", "", createCustomCollection, false));
+		mWindow->pushGui(new GuiTextEditPopup(mWindow, "NOME DA NOVA COLEÇÃO", "", createCustomCollection, false));
 	});
 
 	mMenu.addRow(row);
 
 	bundleCustomCollections = std::make_shared<SwitchComponent>(mWindow);
 	bundleCustomCollections->setState(Settings::getInstance()->getBool("UseCustomCollectionsSystem"));
-	mMenu.addWithLabel("AGRUPAR COLECOES PERSONALIZADAS SEM TEMA", bundleCustomCollections);
+	mMenu.addWithLabel("AGRUPAR COLEÇÕES PERSONALIZADAS SEM TEMA", bundleCustomCollections);
 
 	sortAllSystemsSwitch = std::make_shared<SwitchComponent>(mWindow);
 	sortAllSystemsSwitch->setState(Settings::getInstance()->getBool("SortAllSystems"));
-	mMenu.addWithLabel("CLASSIFICAR COLECOES PERSONALIZADAS E SISTEMAS", sortAllSystemsSwitch);
+	mMenu.addWithLabel("CLASSIFICAR COLEÇÕES PERSONALIZADAS E SISTEMAS", sortAllSystemsSwitch);
 
 	toggleSystemNameInCollections = std::make_shared<SwitchComponent>(mWindow);
 	toggleSystemNameInCollections->setState(Settings::getInstance()->getBool("CollectionShowSystemInfo"));
-	mMenu.addWithLabel("EXIBIR NOME DO SISTEMA NAS COLECOES", toggleSystemNameInCollections);
+	mMenu.addWithLabel("EXIBIR NOME DO SISTEMA NAS COLEÇÕES", toggleSystemNameInCollections);
 
 	if(CollectionSystemManager::get()->isEditing())
 	{
 		row.elements.clear();
-		row.addElement(std::make_shared<TextComponent>(mWindow, "FINANIZAR EDICAO '" + Utils::String::toUpper(CollectionSystemManager::get()->getEditingCollection()) + "' COLECAO", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(mWindow, "FINANIZAR EDIÇÃO '" + Utils::String::toUpper(CollectionSystemManager::get()->getEditingCollection()) + "' COLEÇÃO", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		row.makeAcceptInputHandler(std::bind(&GuiCollectionSystemsOptions::exitEditMode, this));
 		mMenu.addRow(row);
 	}
@@ -143,25 +143,25 @@ void GuiCollectionSystemsOptions::addSystemsToMenu()
 
 	std::map<std::string, CollectionSystemData> autoSystems = CollectionSystemManager::get()->getAutoCollectionSystems();
 
-	autoOptionList = std::make_shared< OptionListComponent<std::string> >(mWindow, "SELECIONAR COLECOES", true);
+	autoOptionList = std::make_shared< OptionListComponent<std::string> >(mWindow, "SELECIONAR COLEÇÕES", true);
 
 	// add Auto Systems
 	for(std::map<std::string, CollectionSystemData>::const_iterator it = autoSystems.cbegin() ; it != autoSystems.cend() ; it++ )
 	{
 		autoOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
 	}
-	mMenu.addWithLabel("COLECOES DE JOGOS AUTOMATICAS", autoOptionList);
+	mMenu.addWithLabel("COLEÇÕES DE JOGOS AUTOMÁTICAS", autoOptionList);
 
 	std::map<std::string, CollectionSystemData> customSystems = CollectionSystemManager::get()->getCustomCollectionSystems();
 
-	customOptionList = std::make_shared< OptionListComponent<std::string> >(mWindow, "SELECIONAR COLECOES", true);
+	customOptionList = std::make_shared< OptionListComponent<std::string> >(mWindow, "SELECIONAR COLEÇÕES", true);
 
 	// add Custom Systems
 	for(std::map<std::string, CollectionSystemData>::const_iterator it = customSystems.cbegin() ; it != customSystems.cend() ; it++ )
 	{
 		customOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
 	}
-	mMenu.addWithLabel("COLECOES DE JOGOS PERSONALIZADAS", customOptionList);
+	mMenu.addWithLabel("COLEÇÕES DE JOGOS PERSONALIZADAS", customOptionList);
 }
 
 void GuiCollectionSystemsOptions::applySettings()
