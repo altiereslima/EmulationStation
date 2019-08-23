@@ -473,14 +473,14 @@ void GuiMenu::openQuitMenu()
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
 		row.makeAcceptInputHandler([window] {
-			window->pushGui(new GuiMsgBox(window, "DESEJA REINICIAR?", "SIM",
+			window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE REINICIAR?", "SIM",
 				[] {
 				Scripting::fireEvent("quit");
 				if(quitES(QuitMode::RESTART) != 0)
 					LOG(LogWarning) << "Restart terminated with non-zero result!";
 			}, "NÃO", nullptr));
 		});
-		row.addElement(std::make_shared<TextComponent>(window, "REINICIAR O COMPUTADOR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+		row.addElement(std::make_shared<TextComponent>(window, "REINICIAR O EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 		s->addRow(row);
 
 
@@ -493,7 +493,7 @@ void GuiMenu::openQuitMenu()
 					[] {
 					Scripting::fireEvent("quit");
 					quitES();
-				}, "NO", nullptr));
+				}, "NÃO", nullptr));
 			});
 			row.addElement(std::make_shared<TextComponent>(window, "SAIR DO EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 			s->addRow(row);
@@ -501,7 +501,7 @@ void GuiMenu::openQuitMenu()
 	}
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE SAIR?", "SIM",
+		window->pushGui(new GuiMsgBox(window, "DESEJA REALMENTE REINICIAR?", "SIM",
 			[] {
 			Scripting::fireEvent("quit", "reboot");
 			Scripting::fireEvent("reboot");
@@ -509,7 +509,7 @@ void GuiMenu::openQuitMenu()
 				LOG(LogWarning) << "Restart terminated with non-zero result!";
 		}, "NÃO", nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, "SAIR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, "REINICIAR O COMPUTADOR", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	s->addRow(row);
 
 	row.elements.clear();

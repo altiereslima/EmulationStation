@@ -22,7 +22,7 @@ GuiGeneralScreensaverOptions::GuiGeneralScreensaverOptions(Window* window, const
 	// Allow ScreenSaver Controls - ScreenSaverControls
 	auto ss_controls = std::make_shared<SwitchComponent>(mWindow);
 	ss_controls->setState(Settings::getInstance()->getBool("ScreenSaverControls"));
-	addWithLabel("SCREENSAVER CONTROLS", ss_controls);
+	addWithLabel("CONTROLES DA PROTEÇÃO DE TELA", ss_controls);
 	addSaveFunc([ss_controls] { Settings::getInstance()->setBool("ScreenSaverControls", ss_controls->getState()); });	
 
 	// screensaver behavior
