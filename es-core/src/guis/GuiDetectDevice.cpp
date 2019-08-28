@@ -6,12 +6,11 @@
 #include "utils/StringUtil.h"
 #include "InputManager.h"
 #include "PowerSaver.h"
-#include "Renderer.h"
 #include "Window.h"
 
 #define HOLD_TIME 1000
 
-GuiDetectDevice::GuiDetectDevice(Window* window, bool firstRun, const std::function<void()>& doneCallback) : GuiComponent(window), mFirstRun(firstRun), 
+GuiDetectDevice::GuiDetectDevice(Window* window, bool firstRun, const std::function<void()>& doneCallback) : GuiComponent(window), mFirstRun(firstRun),
 	mBackground(window, ":/frame.png"), mGrid(window, Vector2i(1, 5))
 {
 	mHoldingConfig = NULL;
@@ -29,7 +28,7 @@ GuiDetectDevice::GuiDetectDevice(Window* window, bool firstRun, const std::funct
 	// device info
 	std::stringstream deviceInfo;
 	int numDevices = InputManager::getInstance()->getNumJoysticks();
-	
+
 	if(numDevices > 0)
 		deviceInfo << numDevices << " CONTROLE" << (numDevices > 1 ? "S" : "") << " DETECTADO";
 	else

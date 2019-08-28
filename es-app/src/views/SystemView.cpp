@@ -5,7 +5,6 @@
 #include "views/UIModeController.h"
 #include "views/ViewController.h"
 #include "Log.h"
-#include "Renderer.h"
 #include "Settings.h"
 #include "SystemData.h"
 #include "Window.h"
@@ -383,7 +382,7 @@ std::vector<HelpPrompt> SystemView::getHelpPrompts()
 	prompts.push_back(HelpPrompt("x", "ALEATÓRIO"));
 
 	if (!UIModeController::getInstance()->isUIModeKid() && Settings::getInstance()->getBool("ScreenSaverControls"))
-		prompts.push_back(HelpPrompt("select", "PROTEÇÃO DE TELA"));
+		prompts.push_back(HelpPrompt("select", "EXECUTAR PROTEÇÃO DE TELA"));
 
 	return prompts;
 }

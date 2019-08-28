@@ -18,6 +18,7 @@
 #include "VolumeControl.h"
 #include <SDL_events.h>
 #include <algorithm>
+#include "platform.h"
 
 GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MENU PRINCIPAL"), mVersion(window)
 {
@@ -221,7 +222,7 @@ void GuiMenu::openUISettings()
 			msg += "PARA DESBLOQUEAR E RETORNAR À INTERFACE COMPLETA, INSIRA ESTE COMANDO: \n";
 			msg += "\"" + UIModeController::getInstance()->getFormattedPassKeyStr() + "\"\n\n";
 			msg += "VOCÊ DESEJA PROSSEGUIR?";
-			window->pushGui(new GuiMsgBox(window, msg, 
+			window->pushGui(new GuiMsgBox(window, msg,
 				"SIM", [selectedMode] {
 					LOG(LogDebug) << "CONFIGURAR MODO DA INTERFACE PARA " << selectedMode;
 					Settings::getInstance()->setString("UIMode", selectedMode);
@@ -359,9 +360,9 @@ void GuiMenu::openUISettings()
 	auto enable_filter = std::make_shared<SwitchComponent>(mWindow);
 	enable_filter->setState(!Settings::getInstance()->getBool("ForceDisableFilters"));
 	s->addWithLabel("HABILITAR FILTROS", enable_filter);
-	s->addSaveFunc([enable_filter] { 
+	s->addSaveFunc([enable_filter] {
 		bool filter_is_enabled = !Settings::getInstance()->getBool("ForceDisableFilters");
-		Settings::getInstance()->setBool("ForceDisableFilters", !enable_filter->getState()); 
+		Settings::getInstance()->setBool("ForceDisableFilters", !enable_filter->getState());
 		if (enable_filter->getState() != filter_is_enabled) ViewController::get()->ReloadAndGoToStart();
 	});
 
