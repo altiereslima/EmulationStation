@@ -281,7 +281,7 @@ void ScreenScraperRequest::processGame(const pugi::xml_document& xmldoc, std::ve
 
 			if (art)
 			{
-				// Sending a 'softname' containing space will make the image URLs returned by the API also contain the space. 
+				// Sending a 'softname' containing space will make the image URLs returned by the API also contain the space.
 				//  Escape any spaces in the URL here
 				result.imageUrl = Utils::String::replace(art.text().get(), " ", "%20");
 

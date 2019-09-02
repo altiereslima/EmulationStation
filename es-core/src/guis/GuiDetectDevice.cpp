@@ -19,7 +19,7 @@ GuiDetectDevice::GuiDetectDevice(Window* window, bool firstRun, const std::funct
 
 	addChild(&mBackground);
 	addChild(&mGrid);
-	
+
 	// title
 	mTitle = std::make_shared<TextComponent>(mWindow, firstRun ? "BEM-VINDO" : "CONFIGURAÇÃO DE CONTROLE", 
 		Font::get(FONT_SIZE_LARGE), 0x555555FF, ALIGN_CENTER);
