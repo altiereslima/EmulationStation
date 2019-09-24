@@ -124,7 +124,7 @@ void CollectionSystemManager::saveCustomCollection(SystemData* sys)
 
 /* Methods to load all Collections into memory, and handle enabling the active ones */
 // loads all Collection Systems
-void CollectionSystemManager::loadCollectionSystems(bool async)
+void CollectionSystemManager::loadCollectionSystems()
 {
 	initAutoCollectionSystems();
 	CollectionSystemDecl decl = mCollectionSystemDeclsIndex[myCollectionsName];
@@ -135,10 +135,8 @@ void CollectionSystemManager::loadCollectionSystems(bool async)
 	{
 		// Now see which ones are enabled
 		loadEnabledListFromSettings();
-
 		// add to the main System Vector, and create Views as needed
-		if (!async)
-			updateSystemsList();
+		updateSystemsList();
 	}
 }
 
@@ -286,7 +284,7 @@ void CollectionSystemManager::updateCollectionSystem(FileData* file, CollectionS
 			trimCollectionCount(rootFolder, LAST_PLAYED_MAX);
 			ViewController::get()->onFileChanged(rootFolder, FILE_METADATA_CHANGED);
 		}
-		else 
+		else
 			ViewController::get()->onFileChanged(rootFolder, FILE_SORTED);
 	}
 }

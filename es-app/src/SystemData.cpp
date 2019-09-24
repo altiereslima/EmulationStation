@@ -10,12 +10,11 @@
 #include "Settings.h"
 #include "ThemeData.h"
 #include "views/UIModeController.h"
+#include <pugixml/src/pugixml.hpp>
 #include <fstream>
-#include "utils/StringUtil.h"
-#include "utils/ThreadPool.h"
-#include "Window.h"
-
-using namespace Utils;
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 std::vector<SystemData*> SystemData::sSystemVector;
 
@@ -169,7 +168,7 @@ std::vector<std::string> readList(const std::string& str, const char* delims = "
 }
 
 //creates systems from information located in a config file
-bool SystemData::loadConfig(Window* window)
+bool SystemData::loadConfig()
 {
 	deleteSystems();
 
@@ -177,7 +176,7 @@ bool SystemData::loadConfig(Window* window)
 
 	LOG(LogInfo) << "Loading system config file " << path << "...";
 
-	if (!Utils::FileSystem::exists(path))
+	if(!Utils::FileSystem::exists(path))
 	{
 		LOG(LogError) << "es_systems.cfg file does not exist!";
 		writeExampleConfig(getConfigPath(true));
@@ -187,7 +186,7 @@ bool SystemData::loadConfig(Window* window)
 	pugi::xml_document doc;
 	pugi::xml_parse_result res = doc.load_file(path.c_str());
 
-	if (!res)
+	if(!res)
 	{
 		LOG(LogError) << "Could not parse es_systems.cfg file!";
 		LOG(LogError) << res.description();
@@ -197,104 +196,86 @@ bool SystemData::loadConfig(Window* window)
 	//actually read the file
 	pugi::xml_node systemList = doc.child("systemList");
 
-	if (!systemList)
+	if(!systemList)
 	{
 		LOG(LogError) << "es_systems.cfg is missing the <systemList> tag!";
 		return false;
 	}
 
-	std::vector<std::string> systemsNames;
-
-	int systemCount = 0;
-	for (pugi::xml_node system = systemList.child("system"); system; system = system.next_sibling("system"))
+	for(pugi::xml_node system = systemList.child("system"); system; system = system.next_sibling("system"))
 	{
-		systemsNames.push_back(system.child("fullname").text().get());
-		systemCount++;
-	}
+		std::string name, fullname, path, cmd, themeFolder;
 
-	int currentSystem = 0;
+		name = system.child("name").text().get();
+		fullname = system.child("fullname").text().get();
+		path = system.child("path").text().get();
 
-	typedef SystemData* SystemDataPtr;
+		// convert extensions list from a string into a vector of strings
+		std::vector<std::string> extensions = readList(system.child("extension").text().get());
 
-	ThreadPool* pThreadPool = NULL;
-	SystemDataPtr* systems = NULL;
+		cmd = system.child("command").text().get();
 
-	if (std::thread::hardware_concurrency() > 2 && Settings::getInstance()->getBool("ThreadedLoading"))
-	{
-		pThreadPool = new ThreadPool();
-
-		systems = new SystemDataPtr[systemCount];
-		for (int i = 0; i < systemCount; i++)
-			systems[i] = nullptr;
-
-		pThreadPool->queueWorkItem([] { CollectionSystemManager::get()->loadCollectionSystems(true); });
-	}
-
-	int processedSystem = 0;
-
-	for (pugi::xml_node system = systemList.child("system"); system; system = system.next_sibling("system"))
-	{
-		if (pThreadPool != NULL)
+		// platform id list
+		const char* platformList = system.child("platform").text().get();
+		std::vector<std::string> platformStrs = readList(platformList);
+		std::vector<PlatformIds::PlatformId> platformIds;
+		for(auto it = platformStrs.cbegin(); it != platformStrs.cend(); it++)
 		{
-			pThreadPool->queueWorkItem([system, currentSystem, systems, &processedSystem]
+			const char* str = it->c_str();
+			PlatformIds::PlatformId platformId = PlatformIds::getPlatformId(str);
+
+			if(platformId == PlatformIds::PLATFORM_IGNORE)
 			{
-				systems[currentSystem] = loadSystem(system);
-				processedSystem++;
-			});
+				// when platform is ignore, do not allow other platforms
+				platformIds.clear();
+				platformIds.push_back(platformId);
+				break;
+			}
+
+			// if there appears to be an actual platform ID supplied but it didn't match the list, warn
+			if(str != NULL && str[0] != '\0' && platformId == PlatformIds::PLATFORM_UNKNOWN)
+				LOG(LogWarning) << "  Unknown platform for system \"" << name << "\" (platform \"" << str << "\" from list \"" << platformList << "\")";
+			else if(platformId != PlatformIds::PLATFORM_UNKNOWN)
+				platformIds.push_back(platformId);
 		}
-		else
+
+		// theme folder
+		themeFolder = system.child("theme").text().as_string(name.c_str());
+
+		//validate
+		if(name.empty() || path.empty() || extensions.empty() || cmd.empty())
 		{
-			std::string fullname = system.child("fullname").text().get();
-
-			if (window != NULL)
-				window->renderLoadingScreen(fullname, systemCount == 0 ? 0 : (float)currentSystem / (float)(systemCount + 1));
-
-			std::string nm = system.child("name").text().get();
-
-			SystemData* pSystem = loadSystem(system);
-			if (pSystem != nullptr)
-				sSystemVector.push_back(pSystem);
+			LOG(LogError) << "System \"" << name << "\" is missing name, path, extension, or command!";
+			continue;
 		}
 
-		currentSystem++;
-	}
+		//convert path to generic directory seperators
+		path = Utils::FileSystem::getGenericPath(path);
 
-	if (pThreadPool != NULL)
-	{
-		if (window != NULL)
+		//expand home symbol if the startpath contains ~
+		if(path[0] == '~')
 		{
-			pThreadPool->wait([window, &processedSystem, systemCount, &systemsNames]
-			{
-				int px = processedSystem - 1;
-				if (px >= 0 && px < systemsNames.size())
-					window->renderLoadingScreen(systemsNames.at(px), (float)px / (float)(systemCount + 1));
-			}, 10);
+			path.erase(0, 1);
+			path.insert(0, Utils::FileSystem::getHomePath());
 		}
-		else
-			pThreadPool->wait();
 
-		for (int i = 0; i < systemCount; i++)
+		//create the system runtime environment data
+		SystemEnvironmentData* envData = new SystemEnvironmentData;
+		envData->mStartPath = path;
+		envData->mSearchExtensions = extensions;
+		envData->mLaunchCommand = cmd;
+		envData->mPlatformIds = platformIds;
+
+		SystemData* newSys = new SystemData(name, fullname, envData, themeFolder);
+		if(newSys->getRootFolder()->getChildrenByFilename().size() == 0)
 		{
-			SystemData* pSystem = systems[i];
-			if (pSystem != nullptr)
-				sSystemVector.push_back(pSystem);
+			LOG(LogWarning) << "System \"" << name << "\" has no games! Ignoring it.";
+			delete newSys;
+		}else{
+			sSystemVector.push_back(newSys);
 		}
-
-		delete[] systems;
-		delete pThreadPool;
-
-		if (window != NULL)
-			window->renderLoadingScreen("Favorites", systemCount == 0 ? 0 : currentSystem / systemCount);
-
-		CollectionSystemManager::get()->updateSystemsList();
 	}
-	else
-	{
-		if (window != NULL)
-			window->renderLoadingScreen("Favorites", systemCount == 0 ? 0 : currentSystem / systemCount);
-
-		CollectionSystemManager::get()->loadCollectionSystems();
-	}
+	CollectionSystemManager::get()->loadCollectionSystems();
 
 	return true;
 }
@@ -365,7 +346,7 @@ std::string SystemData::getConfigPath(bool forWrite)
 
 bool SystemData::isVisible()
 {
-   return (getDisplayedGameCount() > 0 || 
+   return (getDisplayedGameCount() > 0 ||
            (UIModeController::getInstance()->isUIModeFull() && mIsCollectionSystem) ||
            (mIsCollectionSystem && mName == "favorites"));
 }
@@ -513,7 +494,7 @@ void SystemData::loadTheme()
 		sysData.insert(std::pair<std::string, std::string>("system.name", getName()));
 		sysData.insert(std::pair<std::string, std::string>("system.theme", getThemeFolder()));
 		sysData.insert(std::pair<std::string, std::string>("system.fullName", getFullName()));
-		
+
 		mTheme->loadFile(sysData, path);
 	} catch(ThemeException& e)
 	{

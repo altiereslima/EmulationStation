@@ -430,19 +430,17 @@ void ViewController::render(const Transform4x4f& parentTrans)
 
 void ViewController::preload()
 {
-	int i = 1;
-	int max = SystemData::sSystemVector.size() + 1;
-
-	bool splash = Settings::getInstance()->getBool("SplashScreen") && Settings::getInstance()->getBool("SplashScreenProgress");
-	if (splash)
-		mWindow->renderLoadingScreen("Preloading UI", (float)i / (float)max);
-
+	uint32_t i = 0;
 	for(auto it = SystemData::sSystemVector.cbegin(); it != SystemData::sSystemVector.cend(); it++)
 	{
-		if (splash)
+		if(Settings::getInstance()->getBool("SplashScreen") &&
+			Settings::getInstance()->getBool("SplashScreenProgress"))
 		{
 			i++;
-			mWindow->renderLoadingScreen("Preloading UI", (float)i / (float)max);
+			char buffer[100];
+			sprintf (buffer, "CARREGANDO '%s' (%d/%d)",
+				(*it)->getFullName().c_str(), i, (int)SystemData::sSystemVector.size());
+			mWindow->renderLoadingScreen(std::string(buffer));
 		}
 
 		(*it)->getIndex()->resetFilters();
