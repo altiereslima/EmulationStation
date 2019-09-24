@@ -36,8 +36,6 @@ struct SystemViewCarousel
 	Vector2f logoRotationOrigin;
 	Alignment logoAlignment;
 	unsigned int color;
-	unsigned int colorEnd;
-	bool colorGradientHorizontal;
 	int maxLogoCount; // number of logos shown on the carousel
 	Vector2f logoSize;
 	float zIndex;

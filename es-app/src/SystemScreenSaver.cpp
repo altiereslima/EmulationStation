@@ -11,6 +11,7 @@
 #include "FileFilterIndex.h"
 #include "Log.h"
 #include "PowerSaver.h"
+#include "Renderer.h"
 #include "Sound.h"
 #include "SystemData.h"
 #include <unordered_map>
@@ -209,7 +210,7 @@ void SystemScreenSaver::renderScreenSaver()
 	{
 		// Render black background
 		Renderer::setMatrix(Transform4x4f::Identity());
-		Renderer::drawRect(0.0f, 0.0f, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x000000FF, 0x000000FF);
+		Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), (unsigned char)(255));
 
 		// Only render the video if the state requires it
 		if ((int)mState >= STATE_FADE_IN_VIDEO)
@@ -222,7 +223,7 @@ void SystemScreenSaver::renderScreenSaver()
 	{
 		// Render black background
 		Renderer::setMatrix(Transform4x4f::Identity());
-		Renderer::drawRect(0.0f, 0.0f, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x000000FF, 0x000000FF);
+		Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), (unsigned char)(255));
 
 		// Only render the video if the state requires it
 		if ((int)mState >= STATE_FADE_IN_VIDEO)
@@ -248,8 +249,8 @@ void SystemScreenSaver::renderScreenSaver()
 	else if (mState != STATE_INACTIVE)
 	{
 		Renderer::setMatrix(Transform4x4f::Identity());
-		unsigned char color = screensaver_behavior == "dim" ? 0x000000A0 : 0x000000FF;
-		Renderer::drawRect(0.0f, 0.0f, Renderer::getScreenWidth(), Renderer::getScreenHeight(), color, color);
+		unsigned char opacity = screensaver_behavior == "dim" ? 0xA0 : 0xFF;
+		Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x00000000 | opacity);
 	}
 }
 

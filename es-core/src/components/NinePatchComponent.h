@@ -2,8 +2,9 @@
 #ifndef ES_CORE_COMPONENTS_NINE_PATCH_COMPONENT_H
 #define ES_CORE_COMPONENTS_NINE_PATCH_COMPONENT_H
 
-#include "renderers/Renderer.h"
 #include "GuiComponent.h"
+#include "platform.h"
+#include GLHEADER
 
 class TextureResource;
 
@@ -44,7 +45,14 @@ private:
 	void buildVertices();
 	void updateColors();
 
-	Renderer::Vertex* mVertices;
+	struct Vertex
+	{
+		Vector2f pos;
+		Vector2f tex;
+	};
+
+	Vertex* mVertices;
+	GLubyte* mColors;
 
 	std::string mPath;
 	Vector2f mCornerSize;

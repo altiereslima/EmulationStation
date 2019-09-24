@@ -41,7 +41,6 @@ namespace ThemeFlags
 		DELAY = 4096,
 		Z_INDEX = 8192,
 		ROTATION = 16384,
-		VISIBLE = 32768,
 		ALL = 0xFFFFFFFF
 	};
 }
@@ -55,7 +54,7 @@ public:
 
 	template<typename T>
 	friend ThemeException& operator<<(ThemeException& e, T msg);
-
+	
 	inline void setFiles(const std::deque<std::string>& deque)
 	{
 		*this << "from theme \"" << deque.front() << "\"\n";
@@ -176,6 +175,9 @@ private:
 	void parseElement(const pugi::xml_node& elementNode, const std::map<std::string, ElementPropertyType>& typeMap, ThemeElement& element);
 
 	std::map<std::string, ThemeView> mViews;
+
+	std::string resolvePlaceholders(const char* in);
+	std::map<std::string, std::string> mVariables;
 };
 
 #endif // ES_CORE_THEME_DATA_H

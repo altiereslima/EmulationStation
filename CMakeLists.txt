@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-option(GLES "Set to ON if targeting Embedded OpenGL" ${GLES})
+option(GLES "Set to ON if targeting OpenGL ES" ${GLES})
 option(GL "Set to ON if targeting Desktop OpenGL" ${GL})
 option(RPI "Set to ON to enable the Raspberry PI video player (omxplayer)" ${RPI})
-option(CEC "Set to ON to enable CEC" ${CEC})
 
 project(emulationstation-all)
 
@@ -17,7 +16,7 @@ LIST(APPEND CMAKE_MODULE_PATH
 #-------------------------------------------------------------------------------
 #set up OpenGL system variable
 if(GLES)
-    set(GLSystem "Embedded OpenGL" CACHE STRING "The OpenGL system to be used")
+    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
 elseif(GL)
     set(GLSystem "Desktop OpenGL" CACHE STRING "The OpenGL system to be used")
 #-------------------------------------------------------------------------------
@@ -25,13 +24,13 @@ elseif(GL)
 elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/opt/vc/include/bcm_host.h")
     MESSAGE("bcm_host.h found")
     set(BCMHOST found)
-    set(GLSystem "Embedded OpenGL" CACHE STRING "The OpenGL system to be used")
+    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
 #-------------------------------------------------------------------------------
 #check if we're running on OSMC Vero4K
 elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/opt/vero3/lib/libMali.so")
     MESSAGE("libMali.so found")
     set(VERO4K found)
-    set(GLSystem "Embedded OpenGL" CACHE STRING "The OpenGL system to be used")
+    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
 #-------------------------------------------------------------------------------
 #check if we're running on olinuxino / odroid / etc
 elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/usr/lib/libMali.so" OR
@@ -40,12 +39,12 @@ elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/usr/lib/libMali.so" OR
     EXISTS "${CMAKE_FIND_ROOT_PATH}/usr/lib/arm-linux-gnueabihf/mali-egl/libmali.so" OR
     EXISTS "${CMAKE_FIND_ROOT_PATH}/usr/lib/arm-linux-gnueabihf/libmali.so")
     MESSAGE("libMali.so found")
-    set(GLSystem "Embedded OpenGL" CACHE STRING "The OpenGL system to be used")
+    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
 else()
     set(GLSystem "Desktop OpenGL" CACHE STRING "The OpenGL system to be used")
 endif(GLES)
 
-set_property(CACHE GLSystem PROPERTY STRINGS "Desktop OpenGL" "Embedded OpenGL")
+set_property(CACHE GLSystem PROPERTY STRINGS "Desktop OpenGL" "OpenGL ES")
 
 #finding necessary packages
 #-------------------------------------------------------------------------------
@@ -60,11 +59,7 @@ find_package(SDL2 REQUIRED)
 find_package(CURL REQUIRED)
 find_package(VLC REQUIRED)
 find_package(RapidJSON REQUIRED)
-
-#add libCEC support
-if(CEC)
-    find_package(libCEC REQUIRED)
-endif()
+find_package(libCEC)
 
 #add ALSA for Linux
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -114,9 +109,9 @@ endif()
 endif()
 
 if(${GLSystem} MATCHES "Desktop OpenGL")
-    add_definitions(-DUSE_OPENGL_21)
+    add_definitions(-DUSE_OPENGL_DESKTOP)
 else()
-    add_definitions(-DUSE_OPENGLES_10)
+    add_definitions(-DUSE_OPENGL_ES)
 endif()
 
 #-------------------------------------------------------------------------------

@@ -36,19 +36,19 @@ bool parseArgs(int argc, char* argv[])
 	// We need to process --home before any call to Settings::getInstance(), because settings are loaded from homepath
 	for(int i = 1; i < argc; i++)
 	{
-		if(strcmp(argv[i], "--home") == 0)
+		if (strcmp(argv[i], "--home") == 0)
 		{
-			if(i >= argc - 1)
+			if (i >= argc - 1)
 			{
 				std::cerr << "Invalid home path supplied.";
 				return false;
 			}
-
+			
 			Utils::FileSystem::setHomePath(argv[i + 1]);
 			break;
 		}
 	}
-
+	
 	for(int i = 1; i < argc; i++)
 	{
 		if(strcmp(argv[i], "--resolution") == 0)
@@ -214,11 +214,11 @@ bool verifyHomeFolderExists()
 }
 
 // Returns true if everything is OK,
-bool loadSystemConfigFile(const char** errorString)
+bool loadSystemConfigFile(Window* window, const char** errorString)
 {
 	*errorString = NULL;
 
-	if(!SystemData::loadConfig())
+	if(!SystemData::loadConfig(window))
 	{
 		LOG(LogError) << "Error while parsing systems configuration file!";
 		*errorString = "PARECE QUE O SEU ARQUIVO DE CONFIGURAÇÃO DOS SISTEMAS NÃO FOI CONFIGURADO OU É INVÁLIDO. VOCÊ PRECISARÁ FAZER ISSO MANUALMENTE, INFELIZMENTE.\n\n"
@@ -323,6 +323,9 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
+		std::string glExts = (const char*)glGetString(GL_EXTENSIONS);
+		LOG(LogInfo) << "Checking available OpenGL extensions...";
+		LOG(LogInfo) << " ARB_texture_non_power_of_two: " << (glExts.find("ARB_texture_non_power_of_two") != std::string::npos ? "ok" : "MISSING");
 		if(splashScreen)
 		{
 			std::string progressText = "CARREGANDO...";
@@ -333,7 +336,7 @@ int main(int argc, char* argv[])
 	}
 
 	const char* errorMsg = NULL;
-	if(!loadSystemConfigFile(&errorMsg))
+	if(!loadSystemConfigFile(splashScreen && splashScreenProgress ? &window : nullptr, &errorMsg))
 	{
 		// something went terribly wrong
 		if(errorMsg == NULL)

@@ -25,8 +25,8 @@ namespace Utils
 {
 	namespace FileSystem
 	{
-		static std::string homePath = "";
-		static std::string exePath  = "";
+		static std::string homePath;
+		static std::string exePath;
 
 #if defined(_WIN32)
 		static std::string convertFromWideString(const std::wstring wstring)
@@ -142,20 +142,18 @@ namespace Utils
 		void setHomePath(const std::string& _path)
 		{
 			homePath = getGenericPath(_path);
-
-		} // setHomePath
+		}
 
 		std::string getHomePath()
 		{
-			// only construct the homepath once
 			if(homePath.length())
 				return homePath;
 
-			// check if "getExePath()/.emulationstation/es_systems.cfg" exists
-			if(Utils::FileSystem::exists(getExePath() + "/.emulationstation/es_systems.cfg"))
+			// Is it a portable installation ? Check if ".emulationstation/es_systems.cfg" exists in the exe's path
+			if(Utils::FileSystem::exists(getExePath() + "/.emulationstation/es_systems.cfg"))					
 				homePath = getExePath();
 
-			// check for HOME environment variable
+			// Check for HOME environment variable
 			if(!homePath.length())
 			{
 				char* envHome = getenv("HOME");
@@ -164,7 +162,8 @@ namespace Utils
 			}
 
 #if defined(_WIN32)
-			// on Windows we need to check HOMEDRIVE and HOMEPATH
+			// On Windows, HOME is not the system's user path but a user environment variable.
+			// Instead we get the home user's path using %HOMEDRIVE%/%HOMEPATH% which are system variables.
 			if(!homePath.length())
 			{
 				char* envHomeDrive = getenv("HOMEDRIVE");
@@ -176,7 +175,7 @@ namespace Utils
 
 			// no homepath found, fall back to current working directory
 			if(!homePath.length())
-				homePath = getCWDPath();
+				homePath = getCWDPath();			
 
 			// return constructed homepath
 			return homePath;
@@ -194,16 +193,15 @@ namespace Utils
 
 		void setExePath(const std::string& _path)
 		{
-			exePath = getCanonicalPath(_path);
+			std::string path = getCanonicalPath(_path);
+			if(isRegularFile(path))
+				path = getParent(path);
 
-			if(isRegularFile(exePath))
-				exePath = getParent(exePath);
-
+			exePath = path;
 		} // setExePath
 
 		std::string getExePath()
-		{
-			// return constructed exepath
+		{			
 			return exePath;
 
 		} // getExePath
@@ -453,17 +451,21 @@ namespace Utils
 			bool        contains = false;
 			std::string path     = removeCommonPath(_path, _relativeTo, contains);
 
-			// success
 			if(contains)
+			{
+				// success
 				return ("./" + path);
+			}
 
 			if(_allowHome)
 			{
 				path = removeCommonPath(_path, getHomePath(), contains);
 
-				// success
 				if(contains)
+				{
+					// success
 					return ("~/" + path);
+				}
 			}
 
 			// nothing to resolve

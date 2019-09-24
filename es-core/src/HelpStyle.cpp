@@ -1,6 +1,7 @@
 #include "HelpStyle.h"
 
 #include "resources/Font.h"
+#include "Renderer.h"
 
 HelpStyle::HelpStyle()
 {

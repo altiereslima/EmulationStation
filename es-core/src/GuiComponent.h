@@ -76,9 +76,6 @@ public:
     float getDefaultZIndex() const;
     void setDefaultZIndex(float zIndex);
 
-    bool isVisible() const;
-    void setVisible(bool visible);
-
 	// Returns the center point of the image (takes origin into account).
 	Vector2f getCenter() const;
 
@@ -160,7 +157,6 @@ protected:
 	float mZIndex = 0;
 
 	bool mIsProcessing;
-	bool mVisible;
 
 public:
 	const static unsigned char MAX_ANIMATIONS = 4;

@@ -47,7 +47,7 @@ void GuiScraperStart::pressedStart()
 	{
 		if((*it)->getPlatformIds().empty())
 		{
-			mWindow->pushGui(new GuiMsgBox(mWindow,
+			mWindow->pushGui(new GuiMsgBox(mWindow, 
 				Utils::String::toUpper("AVISO: ALGUNS DOS SEUS SISTEMAS SELECIONADOS NÃO POSSUEM UM CONJUNTO DE PLATAFORMAS. OS RESULTADOS PODEM SER AINDA MAIS IMPRECISOS DO QUE O HABITUAL!\NDESEJA CONTUNUAR?"), 
 				"SIM", std::bind(&GuiScraperStart::start, this), 
 				"NÃO", nullptr));
@@ -86,7 +86,7 @@ std::queue<ScraperSearchParams> GuiScraperStart::getSearches(std::vector<SystemD
 				ScraperSearchParams search;
 				search.game = *game;
 				search.system = *sys;
-
+				
 				queue.push(search);
 			}
 		}
@@ -100,7 +100,7 @@ bool GuiScraperStart::input(InputConfig* config, Input input)
 	bool consumed = GuiComponent::input(config, input);
 	if(consumed)
 		return true;
-
+	
 	if(input.value != 0 && config->isMappedTo("b", input))
 	{
 		delete this;

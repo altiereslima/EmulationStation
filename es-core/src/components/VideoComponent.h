@@ -45,7 +45,6 @@ public:
 	virtual void topWindow(bool isTop) override;
 
 	void onOriginChanged() override;
-	void onPositionChanged() override;
 	void onSizeChanged() override;
 	void setOpacity(unsigned char opacity) override;
 

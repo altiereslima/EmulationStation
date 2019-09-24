@@ -14,6 +14,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/MameNames.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/platform.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/PowerSaver.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Settings.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Sound.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.h
@@ -63,9 +64,6 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/math/Vector3f.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/math/Vector4f.h
 
-	# Renderers
-	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.h
-
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/ResourceManager.h
@@ -76,6 +74,7 @@ set(CORE_HEADERS
 	# Utils
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/FileSystemUtil.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/StringUtil.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.h
 )
 
@@ -92,6 +91,8 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/MameNames.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/platform.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/PowerSaver.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer_draw_gl.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer_init_sdlgl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Scripting.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Settings.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Sound.cpp
@@ -137,11 +138,6 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/math/Vector3f.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/math/Vector4f.cpp
 
-	# Renderer
-	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GL21.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GLES10.cpp
-
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/ResourceManager.cpp
@@ -152,6 +148,7 @@ set(CORE_SOURCES
 	# Utils
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/FileSystemUtil.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/StringUtil.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.cpp
 )
 

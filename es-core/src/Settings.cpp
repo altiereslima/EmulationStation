@@ -33,7 +33,7 @@ std::vector<const char*> settings_dont_save {
 	{ "ScreenHeight" },
 	{ "ScreenOffsetX" },
 	{ "ScreenOffsetY" },
-	{ "ScreenRotate" }
+	{ "ScreenRotate" }	
 };
 
 Settings::Settings()
@@ -76,6 +76,8 @@ void Settings::setDefaults()
 	mBoolMap["QuickSystemSelect"] = true;
 	mBoolMap["MoveCarousel"] = true;
 	mBoolMap["SaveGamelistsOnExit"] = true;
+
+	mBoolMap["ThreadedLoading"] = true;
 
 	mBoolMap["Debug"] = false;
 	mBoolMap["DebugGrid"] = false;
