@@ -435,14 +435,14 @@ void ViewController::preload()
 
 	bool splash = Settings::getInstance()->getBool("SplashScreen") && Settings::getInstance()->getBool("SplashScreenProgress");
 	if (splash)
-		mWindow->renderLoadingScreen("PRÉ-CARREGANDO INTERFACE", (float)i / (float)max);
+		mWindow->renderLoadingScreen("CARREGANDO INTERFACE", (float)i / (float)max);
 
 	for(auto it = SystemData::sSystemVector.cbegin(); it != SystemData::sSystemVector.cend(); it++)
 	{
 		if (splash)
 		{
 			i++;
-			mWindow->renderLoadingScreen("PRÉ-CARREGANDO INTERFACE", (float)i / (float)max);
+			mWindow->renderLoadingScreen("CARREGANDO INTERFACE", (float)i / (float)max);
 		}
 
 		(*it)->getIndex()->resetFilters();
