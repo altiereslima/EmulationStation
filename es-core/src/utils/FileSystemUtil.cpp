@@ -9,7 +9,6 @@
 // because windows...
 #include <direct.h>
 #include <Windows.h>
-#include <mutex>
 #define getcwd _getcwd
 #define mkdir(x,y) _mkdir(x)
 #define snprintf _snprintf
@@ -30,8 +29,6 @@ namespace Utils
 		static std::string exePath  = "";
 
 #if defined(_WIN32)
-		std::mutex mFileMutex; // Avoids enumerating N folders at the same time in threaded loadings
-
 		static std::string convertFromWideString(const std::wstring wstring)
 		{
 			int         numBytes = WideCharToMultiByte(CP_UTF8, 0, wstring.c_str(), (int)wstring.length(), nullptr, 0, nullptr, nullptr);
@@ -55,8 +52,6 @@ namespace Utils
 			{
 
 #if defined(_WIN32)
-				std::unique_lock<std::mutex> lock(mFileMutex);
-
 				WIN32_FIND_DATAW findData;
 				std::string      wildcard = path + "/*";
 				HANDLE           hFind    = FindFirstFileW(std::wstring(wildcard.begin(), wildcard.end()).c_str(), &findData);
@@ -199,8 +194,21 @@ namespace Utils
 
 		void setExePath(const std::string& _path)
 		{
-			exePath = getCanonicalPath(_path);
+			constexpr int path_max = 32767;
+#if defined(_WIN32)
+			std::wstring result(path_max, 0);
+			if(GetModuleFileNameW(nullptr, &result[0], path_max) != 0)
+				exePath = convertFromWideString(result);
+#else
+			std::string result(path_max, 0);
+			if(readlink("/proc/self/exe", &result[0], path_max) != -1)
+				exePath = result;
+#endif
+			exePath = getCanonicalPath(exePath);
 
+			// Fallback to argv[0] if everything else fails
+			if (exePath.empty())
+				exePath = getCanonicalPath(_path);
 			if(isRegularFile(exePath))
 				exePath = getParent(exePath);
 
@@ -242,8 +250,8 @@ namespace Utils
 			while((offset = path.find("//")) != std::string::npos)
 				path.erase(offset, 1);
 
-			// remove trailing '/'
-			while(path.length() && ((offset = path.find_last_of('/')) == (path.length() - 1)))
+			// remove trailing '/' when the path is more than a simple '/'
+			while(path.length() > 1 && ((offset = path.find_last_of('/')) == (path.length() - 1)))
 				path.erase(offset, 1);
 
 			// return generic path

@@ -197,7 +197,9 @@ unsigned int getHexColor(const char* str)
 	return val;
 }
 
-std::string ThemeData::resolvePlaceholders(const char* in)
+std::map<std::string, std::string> mVariables;
+
+std::string resolvePlaceholders(const char* in)
 {
 	std::string inStr(in);
 

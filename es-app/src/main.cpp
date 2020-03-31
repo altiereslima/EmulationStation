@@ -214,11 +214,11 @@ bool verifyHomeFolderExists()
 }
 
 // Returns true if everything is OK,
-bool loadSystemConfigFile(Window* window, const char** errorString)
+bool loadSystemConfigFile(const char** errorString)
 {
 	*errorString = NULL;
 
-	if(!SystemData::loadConfig(window))
+	if(!SystemData::loadConfig())
 	{
 		LOG(LogError) << "Error while parsing systems configuration file!";
 		*errorString = "PARECE QUE O SEU ARQUIVO DE CONFIGURAÇÃO DOS SISTEMAS NÃO FOI CONFIGURADO OU É INVÁLIDO. VOCÊ PRECISARÁ FAZER ISSO MANUALMENTE, INFELIZMENTE.\n\n"
@@ -333,7 +333,7 @@ int main(int argc, char* argv[])
 	}
 
 	const char* errorMsg = NULL;
-	if(!loadSystemConfigFile(splashScreen && splashScreenProgress ? &window : nullptr, &errorMsg))
+	if(!loadSystemConfigFile(&errorMsg))
 	{
 		// something went terribly wrong
 		if(errorMsg == NULL)
