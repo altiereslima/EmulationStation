@@ -37,7 +37,7 @@ GuiDetectDevice::GuiDetectDevice(Window* window, bool firstRun, const std::funct
 	mGrid.setEntry(mDeviceInfo, Vector2i(0, 1), false, true);
 
 	// message
-	mMsg1 = std::make_shared<TextComponent>(mWindow, "SEGURE O BOTÃO A NO SEU DISPOSITIVO PARA CONFIGURÁ-LO.", Font::get(FONT_SIZE_SMALL), 0x777777FF, ALIGN_CENTER);
+	mMsg1 = std::make_shared<TextComponent>(mWindow, "SEGURE UM BOTÃO NO SEU DISPOSITIVO PARA CONFIGURÁ-LO.", Font::get(FONT_SIZE_SMALL), 0x777777FF, ALIGN_CENTER);
 	mGrid.setEntry(mMsg1, Vector2i(0, 2), false, true);
 
 	const char* msg2str = firstRun ? "APERTE F4 PARA SAIR A QUALQUER MOMENTO." : "APERTE ESC PARA CANCELAR.";
